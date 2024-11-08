@@ -4,10 +4,7 @@
 package de.uka.ilkd.key.nparser.builder;
 
 import java.math.BigInteger;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -1023,6 +1020,30 @@ public class ExpressionBuilder extends DefaultBuilder {
             new ImmutableArray<>(vs.toArray(new QuantifiableVariable[0])), null);
         unbindVars(orig);
         return a;
+    }
+
+    // TODO: Remove this if event and eventSeqs work without introducing a new Expression (Also remove refs in parser and lexer)
+    @Override
+    public Object visitEvent(KeYParser.EventContext ctx) {
+        var methodCall = accept(ctx.simple_ident());
+        // TODO: somehow handle the method call (using params to identify the right method overload)
+        var params = accept(ctx.simple_ident_comma_list());
+        var requiredStateCtx = ctx.term();
+        var arr = new Term[requiredStateCtx.size()];
+        var requiredState = new ArrayList<Term>();
+        int i = 0;
+        for (var termCtx : requiredStateCtx) {
+            requiredState.add(accept(termCtx));
+            arr[i++] = accept(termCtx);
+        }
+        var eventTerm = getTermFactory().createTerm(Event.instance, arr, null, null);
+        return eventTerm;
+    }
+
+    @Override
+    public Object visitEvent_seq(KeYParser.Event_seqContext ctx) {
+        var eventLst = ctx.event();
+        return null;
     }
 
     @Override

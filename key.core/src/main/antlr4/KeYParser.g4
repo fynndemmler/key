@@ -372,10 +372,13 @@ implication_term: a=disjunction_term (IMP b=implication_term)?;
 disjunction_term: a=conjunction_term (OR b+=conjunction_term)*;
 conjunction_term: a=term60 (AND b+=term60)*;
 term60: unary_formula | equality_term;
+// TODO: remove event/Seq if not needed
 unary_formula:
     NOT sub=term60                                #negation_term
   | (FORALL | EXISTS) bound_variables sub=term60  #quantifierterm
   | MODALITY sub=term60                           #modality_term
+  | event                                         #event_term
+  | event_seq                                     #eventSeq_term
 ;
 equality_term: a=comparison_term ((NOT_EQUALS|EQUALS) b=comparison_term)?;
 comparison_term: a=weak_arith_term ((LESS|LESSEQUAL|GREATER|GREATEREQUAL|UTF_PRECEDES|UTF_SUBSET_EQ|UTF_SUBSEQ|UTF_IN) b=weak_arith_term)?;
@@ -706,6 +709,7 @@ varexpId: // weigl, 2021-03-12: This will be later just an arbitrary identifier.
   | GET_VARIANT
   | IS_LABELED
   | ISINSTRICTFP
+  | EQUAL_METHOD_CALLS
 ;
 
 varexp_argument
@@ -877,3 +881,9 @@ cvalue:
      (ckv (COMMA ckv)*)? COMMA?
     RBRACE #table
   | LBRACKET (cvalue (COMMA cvalue)*)? COMMA? RBRACKET #list;
+
+// Event Sequences TODO: remove if not needed
+// Example: \event[method(param1), !field1]
+event : EVENT LBRACKET simple_ident LPAREN simple_ident_comma_list? RPAREN (COMMA term)* RBRACKET;
+// Example: \eventSeq[\event(...), \event(...)]
+event_seq : EVENT_SEQ LBRACKET (event (COMMA event)*)? RBRACKET;

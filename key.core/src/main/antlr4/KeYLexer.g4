@@ -140,6 +140,7 @@ ISREFERENCEARRAY:'\\isReferenceArray';
 ISSTATICFIELD : '\\isStaticField';
 ISMODELFIELD : '\\isModelField';
 ISINSTRICTFP : '\\isInStrictFp';
+EQUAL_METHOD_CALLS : '\\equalMethodCalls';
 ISSUBTYPE : '\\sub';
 EQUAL_UNIQUE : '\\equalUnique';
 NEW : '\\new';
@@ -222,6 +223,10 @@ PROOF : '\\proof';
 PROOFSCRIPT : '\\proofScript';
 CONTRACTS : '\\contracts';
 INVARIANTS : '\\invariants';
+
+// Keywords for Event Sequences TODO: remove if not needed
+EVENT : '\\event';
+EVENT_SEQ : '\\eventSeq';
 
 // Taclet annotations (see TacletAnnotations.java for more details)
 LEMMA : '\\lemma';

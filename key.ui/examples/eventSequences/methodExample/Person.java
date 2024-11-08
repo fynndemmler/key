@@ -6,6 +6,7 @@
 
 public final class Person {
     private int age = 0;
+    private int height = 180;
 
     public void setAge(int newAge) {
 	this.age = newAge;
@@ -15,5 +16,9 @@ public final class Person {
 	if (age >= 0) {
 	    age++;
 	} 
+    }
+
+    public void grow() {
+        height++;
     }
 }

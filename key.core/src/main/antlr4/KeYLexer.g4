@@ -140,7 +140,6 @@ ISREFERENCEARRAY:'\\isReferenceArray';
 ISSTATICFIELD : '\\isStaticField';
 ISMODELFIELD : '\\isModelField';
 ISINSTRICTFP : '\\isInStrictFp';
-EQUAL_METHOD_CALLS : '\\equalMethodCalls';
 ISSUBTYPE : '\\sub';
 EQUAL_UNIQUE : '\\equalUnique';
 NEW : '\\new';
@@ -168,6 +167,10 @@ IF   : '\\if';
 IFEX   : '\\ifEx';
 THEN : '\\then';
 ELSE : '\\else';
+
+// Event Sequences
+NEW_METHOD_NAME : '\\newMethodName';
+EQUAL_METHOD_CALLS : '\\equalMethodCalls';
 
 // inclusion and stuff, things that (usually) come at the beginning
 // of the file
@@ -227,6 +230,7 @@ INVARIANTS : '\\invariants';
 // Keywords for Event Sequences TODO: remove if not needed
 EVENT : '\\event';
 EVENT_SEQ : '\\eventSeq';
+EVENT_UPDATE : '\\eventUpdate';
 
 // Taclet annotations (see TacletAnnotations.java for more details)
 LEMMA : '\\lemma';

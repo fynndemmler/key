@@ -70,3 +70,4 @@ key.core/src/main/antlr4/gen/
 
 scripts/tools/checkstyle/key_checks_incremental.xml
 checkstyle-diff.txt
+/.ideavimrc

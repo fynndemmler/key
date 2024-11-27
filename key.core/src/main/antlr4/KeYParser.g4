@@ -366,7 +366,11 @@ emptyset: UTF_EMPTY;
 term: parallel_term; // weigl: should normally be equivalence_term
 //labeled_term: a=parallel_term (LGUILLEMETS labels=label RGUILLEMETS)?;
 parallel_term: a=elementary_update_term (PARALLEL b=elementary_update_term)*;
-elementary_update_term: a=equivalence_term (ASSIGN b=equivalence_term)?;
+// Changed for eventSequences
+elementary_update_term: elementary_state_update_term | elementary_event_update_term;
+elementary_state_update_term: a=equivalence_term (ASSIGN b=equivalence_term)?;
+elementary_event_update_term: EVENT_UPDATE LPAREN evt=equivalence_term RPAREN;//cn=equivalence_term COMMA mn=equivalence_term COMMA params=equivalence_term RPAREN; //(term (COMMA term)*)?
+
 equivalence_term: a=implication_term (EQV b+=implication_term)*;
 implication_term: a=disjunction_term (IMP b=implication_term)?;
 disjunction_term: a=conjunction_term (OR b+=conjunction_term)*;
@@ -377,15 +381,15 @@ unary_formula:
     NOT sub=term60                                #negation_term
   | (FORALL | EXISTS) bound_variables sub=term60  #quantifierterm
   | MODALITY sub=term60                           #modality_term
-  | event                                         #event_term
-  | event_seq                                     #eventSeq_term
+ // | event                                         #event_term
+ // | event_seq                                     #eventSeq_term
 ;
 equality_term: a=comparison_term ((NOT_EQUALS|EQUALS) b=comparison_term)?;
 comparison_term: a=weak_arith_term ((LESS|LESSEQUAL|GREATER|GREATEREQUAL|UTF_PRECEDES|UTF_SUBSET_EQ|UTF_SUBSEQ|UTF_IN) b=weak_arith_term)?;
 weak_arith_term: a=strong_arith_term_1 (op+=(PLUS|MINUS|UTF_UNION|UTF_INTERSECT|UTF_SETMINUS) b+=strong_arith_term_1)*;
 strong_arith_term_1: a=strong_arith_term_2 (STAR b+=strong_arith_term_2)*;
 strong_arith_term_2: a=atom_prefix (op+=(PERCENT|SLASH) b+=atom_prefix)*;
-update_term: (LBRACE u=parallel_term RBRACE) (atom_prefix | unary_formula);
+update_term: (LBRACE u=parallel_term RBRACE) (atom_prefix | unary_formula | elementary_event_update_term);
 
 substitution_term:
  LBRACE SUBST  bv=one_bound_variable SEMI
@@ -710,6 +714,7 @@ varexpId: // weigl, 2021-03-12: This will be later just an arbitrary identifier.
   | IS_LABELED
   | ISINSTRICTFP
   | EQUAL_METHOD_CALLS
+  | NEW_METHOD_NAME
 ;
 
 varexp_argument
@@ -884,6 +889,6 @@ cvalue:
 
 // Event Sequences TODO: remove if not needed
 // Example: \event[method(param1), !field1]
-event : EVENT LBRACKET simple_ident LPAREN simple_ident_comma_list? RPAREN (COMMA term)* RBRACKET;
+//event : EVENT LBRACKET simple_ident LPAREN simple_ident_comma_list? RPAREN (COMMA term)* RBRACKET;
 // Example: \eventSeq[\event(...), \event(...)]
-event_seq : EVENT_SEQ LBRACKET (event (COMMA event)*)? RBRACKET;
+//event_seq : EVENT_SEQ LBRACKET (event (COMMA event)*)? RBRACKET;

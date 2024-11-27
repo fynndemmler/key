@@ -12,15 +12,18 @@ import de.uka.ilkd.key.java.abstraction.*;
 import de.uka.ilkd.key.java.expression.Literal;
 import de.uka.ilkd.key.java.expression.ParenthesizedExpression;
 import de.uka.ilkd.key.java.expression.literal.NullLiteral;
+import de.uka.ilkd.key.java.expression.literal.StringLiteral;
 import de.uka.ilkd.key.java.expression.operator.*;
 import de.uka.ilkd.key.java.expression.operator.adt.Singleton;
 import de.uka.ilkd.key.java.recoderext.ImplicitFieldAdder;
 import de.uka.ilkd.key.java.reference.*;
 import de.uka.ilkd.key.ldt.*;
+import de.uka.ilkd.key.logic.ProgramElementName;
 import de.uka.ilkd.key.logic.ProgramInLogic;
 import de.uka.ilkd.key.logic.Term;
 import de.uka.ilkd.key.logic.TermBuilder;
 import de.uka.ilkd.key.logic.op.*;
+import de.uka.ilkd.key.logic.sort.ProgramSVSort;
 import de.uka.ilkd.key.util.Debug;
 
 import org.key_project.logic.Name;
@@ -122,6 +125,12 @@ public final class TypeConverter {
     public CharListLDT getCharListLDT() {
         return (CharListLDT) getLDT(CharListLDT.NAME);
     }
+
+    public MethodLDT getMethodLDT() {
+        return (MethodLDT) getLDT(MethodLDT.NAME);
+    }
+
+    //public EventLDT getEventLDT() { return (EventLDT) getLDT(EventLDT.NAME); }
 
     public Collection<LDT> getLDTs() {
         return LDTs.values();

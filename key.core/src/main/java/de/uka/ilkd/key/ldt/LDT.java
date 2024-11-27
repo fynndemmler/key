@@ -142,7 +142,8 @@ public abstract class LDT implements Named {
         ret.put(DoubleLDT.NAME, new DoubleLDT(s));
         ret.put(RealLDT.NAME, new RealLDT(s));
         ret.put(CharListLDT.NAME, new CharListLDT(s));
-
+        ret.put(MethodLDT.NAME, new MethodLDT(s));
+        //ret.put(EventLDT.NAME, new EventLDT(s));
         return ret;
     }
 

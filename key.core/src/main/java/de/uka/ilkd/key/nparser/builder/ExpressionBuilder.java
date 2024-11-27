@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 import de.uka.ilkd.key.java.*;
 import de.uka.ilkd.key.java.abstraction.KeYJavaType;
 import de.uka.ilkd.key.java.expression.literal.StringLiteral;
+import de.uka.ilkd.key.java.reference.MethodReference;
+import de.uka.ilkd.key.java.reference.ReferencePrefix;
 import de.uka.ilkd.key.ldt.IntegerLDT;
 import de.uka.ilkd.key.ldt.JavaDLTheory;
 import de.uka.ilkd.key.ldt.LDT;
@@ -186,13 +188,21 @@ public class ExpressionBuilder extends DefaultBuilder {
     }
 
     @Override
-    public Term visitElementary_update_term(KeYParser.Elementary_update_termContext ctx) {
+    public Term visitElementary_state_update_term(KeYParser.Elementary_state_update_termContext ctx) {
         Term a = accept(ctx.a);
         Term b = accept(ctx.b);
         if (b != null) {
             return updateOrigin(getServices().getTermBuilder().elementary(a, b), ctx, services);
         }
         return updateOrigin(a, ctx, services);
+    }
+
+    @Override
+    public Term visitElementary_event_update_term(KeYParser.Elementary_event_update_termContext ctx) {
+        Term evt = accept(ctx.evt);
+        //Term mn = accept(ctx.mn);
+        //Term params = accept(ctx.params);
+        return updateOrigin(getServices().getTermBuilder().eventUpdate(evt), ctx, services);
     }
 
     @Override
@@ -1021,7 +1031,7 @@ public class ExpressionBuilder extends DefaultBuilder {
         unbindVars(orig);
         return a;
     }
-
+/*
     // TODO: Remove this if event and eventSeqs work without introducing a new Expression (Also remove refs in parser and lexer)
     @Override
     public Object visitEvent(KeYParser.EventContext ctx) {
@@ -1045,6 +1055,45 @@ public class ExpressionBuilder extends DefaultBuilder {
         var eventLst = ctx.event();
         return null;
     }
+*/
+    /*
+    @Override
+    public Object visitEvent_update(KeYParser.Event_updateContext ctx) {
+        //List<Term> terms = mapOf(ctx.term());
+        //String id = accept(ctx.nr);
+        //IProgramVariable param = doLookup(new Name(id), programVariables());
+        //Term nr = accept(ctx.nr);
+        //Term obj = accept(ctx.obj);
+        //Term methodName = accept(ctx.mn);
+        //terms.addFirst(methodName);
+        //terms.addFirst(obj);
+        Term className = accept(ctx.cn);
+        Term methodName = accept(ctx.mn);
+        Term params = accept(ctx.params);
+       // var clazz = new ReferencePrefix(className);
+        //var t1 = getServices().getTypeConverter().convertToLogicElement(new MethodReference());
+
+        var ssssf = getServices().getTermBuilder();
+        var nsl = variables();
+        var jnsn = programVariables();
+        var nkslnj = schemaVariables().lookup(className.toString());
+        var ksl = getServices();
+        var sdf = getServices().getNamespaces();
+        var jks = getServices().getNameRecorder();
+       // var test1 = getServices().getTypeConverter().
+        //var test = getServices().getJavaInfo().getAttribute(methodName);
+        //String params = accept(ctx.params);
+
+        // Term[] params = new Term[args.size()];
+        //for (int i = 0; i < args.size(); ++i) {
+        //    params[i] = (Term)args.get(i);
+       // }
+        //var methodCallTerm = getServices().getJavaInfo().getStaticProgramMethodTerm(methodName,
+             //   null, className);
+      //  return getTermFactory().createTerm(EventUpdate.instance, methodCallTerm);
+       return getTermFactory().createTerm(EventUpdate.instance, className, methodName, params);
+        //return null;
+    }*/
 
     @Override
     public Term visitLocset_term(KeYParser.Locset_termContext ctx) {

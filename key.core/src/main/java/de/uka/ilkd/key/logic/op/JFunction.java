@@ -87,8 +87,12 @@ public class JFunction extends Function implements Operator, Sorted {
         this(name, sort, new ImmutableArray<>(), null, false);
     }
 
+    public JFunction(Name name, Sort sort, boolean isUnique, boolean isSkolemConstant) {
+        this(name, sort, new ImmutableArray<>(), null, isUnique, true, isSkolemConstant);
+    }
+
     public JFunction(Name name, Sort sort, boolean isSkolemConstant) {
-        this(name, sort, new ImmutableArray<>(), null, false, true, isSkolemConstant);
+        this(name, sort, false, isSkolemConstant);
     }
 
     /**

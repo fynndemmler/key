@@ -2351,4 +2351,8 @@ public class TermBuilder {
     public OriginTermLabelFactory getOriginFactory() {
         return services.getOriginFactory();
     }
+
+    public Term eventUpdate(Term evt) {
+        return tf.createTerm(EventUpdate.instance, evt);
+    }
 }

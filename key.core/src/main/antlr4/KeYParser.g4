@@ -714,7 +714,8 @@ varexpId: // weigl, 2021-03-12: This will be later just an arbitrary identifier.
   | IS_LABELED
   | ISINSTRICTFP
   | EQUAL_METHOD_CALLS
-  | NEW_METHOD_NAME
+  | GET_METHOD_NAME
+  | GET_OBJECT
 ;
 
 varexp_argument

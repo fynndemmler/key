@@ -296,8 +296,13 @@ public class TacletBuilderManipulators {
     // Event Sequences
     public static final AbstractConditionBuilder EQUAL_METHOD_CALLS =
             new ConstructorBasedBuilder("equalMethodCalls", EqualMethodCalls.class, SV, SV, SV, SV);
-    public static final AbstractConditionBuilder NEW_METHOD_NAME =
-            new ConstructorBasedBuilder("newMethodName", NewMethodName.class, SV, SV, SV, SV);
+    public static final AbstractConditionBuilder GET_METHOD_NAME =
+            new ConstructorBasedBuilder("getMethodName", GetMethodNameCondition.class, SV, SV, SV, SV);
+    public static final AbstractConditionBuilder GET_OBJECT =
+            new ConstructorBasedBuilder("getObject", GetObjectCondition.class, SV, SV);
+    /*
+    public static final AbstractConditionBuilder GET_PARAMS =
+            new ConstructorBasedBuilder("getParams", GetParamsCondition.class, SV, SV);*/
 
     static class JavaTypeToSortConditionBuilder extends AbstractConditionBuilder {
         private final boolean elmen;
@@ -381,7 +386,7 @@ public class TacletBuilderManipulators {
                 STATIC_FIELD, MODEL_FIELD, SUBFORMULA, DROP_EFFECTLESS_STORES, EQUAL_UNIQUE,
                 META_DISJOINT,
                 IS_OBSERVER, CONSTANT, HAS_SORT, LABEL, NEW_LABEL, HAS_ELEM_SORT, IS_IN_STRICTFP, EQUAL_METHOD_CALLS,
-                NEW_METHOD_NAME);
+                GET_METHOD_NAME, GET_OBJECT);
         register(STORE_TERM_IN, STORE_STMT_IN, HAS_INVARIANT, GET_INVARIANT, GET_FREE_INVARIANT,
                 GET_VARIANT, IS_LABELED);
         loadWithServiceLoader();

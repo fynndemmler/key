@@ -169,7 +169,9 @@ THEN : '\\then';
 ELSE : '\\else';
 
 // Event Sequences
-NEW_METHOD_NAME : '\\newMethodName';
+GET_OBJECT : '\\getObject';
+GET_METHOD_NAME : '\\getMethodName';
+GET_PARAMS      : '\\getParams';
 EQUAL_METHOD_CALLS : '\\equalMethodCalls';
 
 // inclusion and stuff, things that (usually) come at the beginning

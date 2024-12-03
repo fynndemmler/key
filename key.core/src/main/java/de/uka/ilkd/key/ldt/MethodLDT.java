@@ -24,6 +24,10 @@ import org.key_project.util.collection.ImmutableArray;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This LDT is primarily concerned with access to a constant encoding for every method in all namespaces. These
+ * constant encodings are needed for tracing events.
+ */
 public class MethodLDT extends LDT {
     public static final Name NAME = new Name("MethodName");
 
@@ -72,7 +76,7 @@ public class MethodLDT extends LDT {
      * @param fnType Fully qualified fn type.
      * @param mnInst The method name.
      * @param params An array of parameter types.
-     * @return
+     * @return The JFunction that is requested.
      */
     public JFunction getMethodNameConstant(String fnType, MethodName mnInst, ImmutableArray<String> params) {
         final var methodNameToFind = constructMethodName(fnType, mnInst.toString(),
@@ -89,10 +93,10 @@ public class MethodLDT extends LDT {
      * Constructs the MethodName from the given parts.
      * Format: {@code fullTypeName}{@value METHOD_DELIM}{@code methodName}{@value PARAMS_DELIM}{@code paramTypes}
      *
-     * @param fullTypeName
-     * @param methodName
-     * @param paramTypes
-     * @return
+     * @param fullTypeName The type name of the reference.
+     * @param methodName   The method name.
+     * @param paramTypes   The parameter type list.
+     * @return The constructed MethodName.
      */
     private Name constructMethodName(String fullTypeName, String methodName, String paramTypes) {
         final StringBuffer signature = new StringBuffer();
@@ -104,10 +108,18 @@ public class MethodLDT extends LDT {
         return new Name(signature.toString());
     }
 
+    /**
+     * Retrieve a MethodName constant by its Name.
+     *
+     * @param methodNameCandidateName The name of the MethodName constant.
+     * @return The MethodName constant for {@code methodNameCandidateName} or {@code null} if there was no constant
+     * with that
+     * name.
+     */
     private JFunction getRegisteredMethodNameConstant(Name methodNameCandidateName) {
         var potentialMatch =
                 methodNameConstants.stream().filter(mnc -> mnc.name().equals(methodNameCandidateName)).findFirst();
-        return potentialMatch.get();
+        return potentialMatch.orElse(null);
     }
 
     /**

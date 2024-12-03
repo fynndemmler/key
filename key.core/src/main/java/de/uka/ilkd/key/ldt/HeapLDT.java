@@ -45,8 +45,7 @@ public final class HeapLDT extends LDT {
     public static final Name SAVED_HEAP_NAME = new Name("savedHeap");
     public static final Name PERMISSION_HEAP_NAME = new Name("permissions");
     public static final Name[] VALID_HEAP_NAMES =
-        { BASE_HEAP_NAME, SAVED_HEAP_NAME, PERMISSION_HEAP_NAME };
-
+            {BASE_HEAP_NAME, SAVED_HEAP_NAME, PERMISSION_HEAP_NAME};
 
 
     // additional sorts
@@ -84,7 +83,6 @@ public final class HeapLDT extends LDT {
     private ImmutableList<LocationVariable> heaps;
 
 
-
     // -------------------------------------------------------------------------
     // constructors
     // -------------------------------------------------------------------------
@@ -106,7 +104,7 @@ public final class HeapLDT extends LDT {
         classPrepared = addSortDependingFunction(services, "<classPrepared>");
         classInitialized = addSortDependingFunction(services, "<classInitialized>");
         classInitializationInProgress =
-            addSortDependingFunction(services, "<classInitializationInProgress>");
+                addSortDependingFunction(services, "<classInitializationInProgress>");
         classErroneous = addSortDependingFunction(services, "<classErroneous>");
         length = addFunction(services, "length");
         nullFunc = addFunction(services, "null");
@@ -136,11 +134,14 @@ public final class HeapLDT extends LDT {
         } else {
             String fieldPVName = fieldPV.name().toString();
             int index = fieldPV.toString().indexOf("::");
-            assert index > 0;
+            if (index == -1) {
+                fieldPVName = fieldPV.sort().toString() + "::" + fieldPVName;
+                index = fieldPVName.indexOf("::");
+            }
+            //assert index > 0;
             return fieldPVName.substring(0, index) + "::$" + fieldPVName.substring(index + 2);
         }
     }
-
 
 
     // -------------------------------------------------------------------------
@@ -150,10 +151,11 @@ public final class HeapLDT extends LDT {
     /**
      * Wrapper class
      *
-     * @param className the class name
+     * @param className     the class name
      * @param attributeName the attribute name
      */
-    public record SplitFieldName(String className, String attributeName) {}
+    public record SplitFieldName(String className, String attributeName) {
+    }
 
     /**
      * Splits a field name.
@@ -298,7 +300,7 @@ public final class HeapLDT extends LDT {
 
 
     public JFunction getClassInitializationInProgress(Sort instanceSort,
-            TermServices services) {
+                                                      TermServices services) {
         return classInitializationInProgress.getInstanceFor(instanceSort, services);
     }
 
@@ -382,7 +384,7 @@ public final class HeapLDT extends LDT {
             final Name kind = new Name(name.toString().substring(index + 2));
 
             SortDependingFunction firstInstance =
-                SortDependingFunction.getFirstInstance(kind, services);
+                    SortDependingFunction.getFirstInstance(kind, services);
             if (firstInstance != null) {
                 Sort sortDependingOn = fieldPV.getContainerType().getSort();
                 result = firstInstance.getInstanceFor(sortDependingOn, services);
@@ -396,8 +398,8 @@ public final class HeapLDT extends LDT {
                         heapCount++;
                     }
                     result = new ObserverFunction(kind.toString(), fieldPV.sort(),
-                        fieldPV.getKeYJavaType(), targetSort(), fieldPV.getContainerType(),
-                        fieldPV.isStatic(), new ImmutableArray<>(), heapCount, 1);
+                            fieldPV.getKeYJavaType(), targetSort(), fieldPV.getContainerType(),
+                            fieldPV.isStatic(), new ImmutableArray<>(), heapCount, 1);
                 } else {
                     result = new JFunction(name, fieldSort, new Sort[0], null, true);
                 }
@@ -429,21 +431,21 @@ public final class HeapLDT extends LDT {
 
     @Override
     public boolean isResponsible(de.uka.ilkd.key.java.expression.Operator op, Term[] subs,
-            Services services, ExecutionContext ec) {
+                                 Services services, ExecutionContext ec) {
         return false;
     }
 
 
     @Override
     public boolean isResponsible(de.uka.ilkd.key.java.expression.Operator op, Term left, Term right,
-            Services services, ExecutionContext ec) {
+                                 Services services, ExecutionContext ec) {
         return false;
     }
 
 
     @Override
     public boolean isResponsible(de.uka.ilkd.key.java.expression.Operator op, Term sub,
-            TermServices services, ExecutionContext ec) {
+                                 TermServices services, ExecutionContext ec) {
         return false;
     }
 
@@ -457,7 +459,7 @@ public final class HeapLDT extends LDT {
 
     @Override
     public JFunction getFunctionFor(de.uka.ilkd.key.java.expression.Operator op, Services serv,
-            ExecutionContext ec) {
+                                    ExecutionContext ec) {
         assert false;
         return null;
     }
@@ -487,10 +489,10 @@ public final class HeapLDT extends LDT {
         } else if (t.sort() == getFieldSort() && t.op() instanceof JFunction
                 && ((Function) t.op()).isUnique()) {
             return services.getJavaInfo().getAttribute(getPrettyFieldName(t.op()),
-                getClassName((Function) t.op()));
+                    getClassName((Function) t.op()));
         }
         throw new IllegalArgumentException(
-            "Could not translate " + ProofSaver.printTerm(t, null) + " to program.");
+                "Could not translate " + ProofSaver.printTerm(t, null) + " to program.");
     }
 
 

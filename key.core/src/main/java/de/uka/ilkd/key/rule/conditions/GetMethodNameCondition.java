@@ -15,7 +15,7 @@ import org.key_project.util.collection.ImmutableArray;
 
 import java.util.ArrayList;
 
-public class NewMethodName implements VariableCondition {
+public class GetMethodNameCondition implements VariableCondition {
     public final static String NAME = "\\newMethodName";
 
     private final SchemaVariable newMethodName;
@@ -23,8 +23,8 @@ public class NewMethodName implements VariableCondition {
     private final SchemaVariable methodName;
     private final SchemaVariable params;
 
-    public NewMethodName(SchemaVariable newMethodName, SchemaVariable objName, SchemaVariable methodName,
-                         SchemaVariable params) {
+    public GetMethodNameCondition(SchemaVariable newMethodName, SchemaVariable objName, SchemaVariable methodName,
+                                  SchemaVariable params) {
         this.newMethodName = newMethodName;
         this.objName = objName;
         this.methodName = methodName;
@@ -44,7 +44,8 @@ public class NewMethodName implements VariableCondition {
         if (fnInst == null || mnInst == null || paramsInst == null) {
             return mc;
         }
-
+        // TODO: Make sure to handle 'this' and empty fnInst here too (Use ExecutionContext similar to
+        //  MayExpandMethodCondition.java)
         final var fieldType = services.getTypeConverter().getKeYJavaType((Expression) fnInst).getFullName();
         final var paramsArr = toExpArray(paramsInst);
         var paramTypes = new ArrayList<String>();

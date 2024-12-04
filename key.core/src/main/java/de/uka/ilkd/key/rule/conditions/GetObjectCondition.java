@@ -1,30 +1,28 @@
 package de.uka.ilkd.key.rule.conditions;
 
-import de.uka.ilkd.key.java.Expression;
-import de.uka.ilkd.key.java.ProgramElement;
 import de.uka.ilkd.key.java.Services;
-import de.uka.ilkd.key.java.reference.MethodName;
+import de.uka.ilkd.key.java.reference.FieldReference;
 import de.uka.ilkd.key.java.reference.ReferencePrefix;
-import de.uka.ilkd.key.logic.op.JFunction;
-import de.uka.ilkd.key.logic.op.LocationVariable;
+import de.uka.ilkd.key.java.reference.SuperReference;
+import de.uka.ilkd.key.java.reference.ThisReference;
+import de.uka.ilkd.key.logic.Term;
 import de.uka.ilkd.key.logic.op.SchemaVariable;
 import de.uka.ilkd.key.rule.MatchConditions;
 import de.uka.ilkd.key.rule.VariableCondition;
 import de.uka.ilkd.key.rule.inst.SVInstantiations;
 import org.key_project.logic.SyntaxElement;
-import org.key_project.util.collection.ImmutableArray;
 
-import java.util.ArrayList;
-
+/**
+ * Converts a {@link ReferencePrefix} into its corresponding {@link Term} and instantiates the schema variable {@code
+ * objPlaceholder} with it.
+ */
 public class GetObjectCondition implements VariableCondition {
-    public final static String NAME = "\\newMethodName";
-
-    private final SchemaVariable objName;
     private final SchemaVariable objPlaceholder;
+    private final SchemaVariable objName;
 
-    public GetObjectCondition(SchemaVariable objName, SchemaVariable objPlaceholder) {
-        this.objName = objName;
+    public GetObjectCondition(SchemaVariable objPlaceholder, SchemaVariable objName) {
         this.objPlaceholder = objPlaceholder;
+        this.objName = objName;
     }
 
     @Override
@@ -32,19 +30,19 @@ public class GetObjectCondition implements VariableCondition {
                                  MatchConditions mc,
                                  Services services) {
         SVInstantiations svInst = mc.getInstantiations();
-        var fnInst = svInst.getInstantiation(this.objName);
-        if (fnInst == null) {
-            // TODO: Throw err
-            return null;
+        var ec = svInst.getContextInstantiation().activeStatementContext();
+        ReferencePrefix rp = (ReferencePrefix) svInst.getInstantiation(this.objName);
+        if (rp == null || ec == null) {
+            return mc;
         }
-        // var fnFunc = (JFunction) fnInst;
-        //var pv = services.getNamespaces().programVariables().lookup(fnInst.toString());
-        //pv.getKeYJavaType()
-        JFunction fnFunc = services.getTypeConverter().getHeapLDT().getFieldSymbolForPV((LocationVariable) fnInst,
-                services);
-        //final var fieldType = services.getTypeConverter().getKeYJavaType((Expression) fnInst).getFullName();
-        var ini = services.getTermBuilder().func(fnFunc);
-        var ret = svInst.add(this.objPlaceholder, ini, services);
+        Term logicElem = null;
+        if (rp == null || rp instanceof ThisReference || rp instanceof SuperReference) {
+            var newRp = ((FieldReference) rp).setReferencePrefix(ec.getRuntimeInstance());
+            logicElem = services.getTypeConverter().convertToLogicElement(newRp);
+        } else {
+            logicElem = services.getTypeConverter().convertToLogicElement(rp, ec);
+        }
+        var ret = svInst.add(this.objPlaceholder, logicElem, services);
         return mc.setInstantiations(ret);
     }
 }

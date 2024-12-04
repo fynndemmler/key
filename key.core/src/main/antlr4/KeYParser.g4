@@ -716,6 +716,7 @@ varexpId: // weigl, 2021-03-12: This will be later just an arbitrary identifier.
   | EQUAL_METHOD_CALLS
   | GET_METHOD_NAME
   | GET_OBJECT
+  | GET_PARAMS
 ;
 
 varexp_argument

@@ -3,12 +3,6 @@
  * SPDX-License-Identifier: GPL-2.0-only */
 package de.uka.ilkd.key.nparser.varexp;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.ServiceLoader;
-import java.util.stream.Collectors;
-
 import de.uka.ilkd.key.java.abstraction.KeYJavaType;
 import de.uka.ilkd.key.logic.Term;
 import de.uka.ilkd.key.logic.op.OperatorSV;
@@ -18,10 +12,14 @@ import de.uka.ilkd.key.logic.sort.GenericSort;
 import de.uka.ilkd.key.rule.VariableCondition;
 import de.uka.ilkd.key.rule.conditions.*;
 import de.uka.ilkd.key.rule.tacletbuilder.TacletBuilder;
-
+import org.jspecify.annotations.NonNull;
 import org.key_project.logic.sort.Sort;
 
-import org.jspecify.annotations.NonNull;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.ServiceLoader;
+import java.util.stream.Collectors;
 
 import static de.uka.ilkd.key.nparser.varexp.ArgumentType.SORT;
 import static de.uka.ilkd.key.nparser.varexp.ArgumentType.TYPE_RESOLVER;
@@ -300,9 +298,8 @@ public class TacletBuilderManipulators {
             new ConstructorBasedBuilder("getMethodName", GetMethodNameCondition.class, SV, SV, SV, SV);
     public static final AbstractConditionBuilder GET_OBJECT =
             new ConstructorBasedBuilder("getObject", GetObjectCondition.class, SV, SV);
-    /*
     public static final AbstractConditionBuilder GET_PARAMS =
-            new ConstructorBasedBuilder("getParams", GetParamsCondition.class, SV, SV);*/
+            new ConstructorBasedBuilder("getParams", GetParamsCondition.class, SV, SV);
 
     static class JavaTypeToSortConditionBuilder extends AbstractConditionBuilder {
         private final boolean elmen;
@@ -385,10 +382,12 @@ public class TacletBuilderManipulators {
                 applyUpdateOnRigid, DROP_EFFECTLESS_ELEMENTARIES, SIMPLIFY_ITE_UPDATE, SUBFORMULAS,
                 STATIC_FIELD, MODEL_FIELD, SUBFORMULA, DROP_EFFECTLESS_STORES, EQUAL_UNIQUE,
                 META_DISJOINT,
-                IS_OBSERVER, CONSTANT, HAS_SORT, LABEL, NEW_LABEL, HAS_ELEM_SORT, IS_IN_STRICTFP, EQUAL_METHOD_CALLS,
-                GET_METHOD_NAME, GET_OBJECT);
+                IS_OBSERVER, CONSTANT, HAS_SORT, LABEL, NEW_LABEL, HAS_ELEM_SORT, IS_IN_STRICTFP);
         register(STORE_TERM_IN, STORE_STMT_IN, HAS_INVARIANT, GET_INVARIANT, GET_FREE_INVARIANT,
                 GET_VARIANT, IS_LABELED);
+        // Event Sequences
+        register(EQUAL_METHOD_CALLS, GET_METHOD_NAME, GET_OBJECT, GET_PARAMS);
+
         loadWithServiceLoader();
     }
 

@@ -5,6 +5,8 @@ import de.uka.ilkd.key.java.ProgramElement;
 import de.uka.ilkd.key.java.Services;
 import de.uka.ilkd.key.java.reference.MethodName;
 import de.uka.ilkd.key.java.reference.ReferencePrefix;
+import de.uka.ilkd.key.java.reference.SuperReference;
+import de.uka.ilkd.key.java.reference.ThisReference;
 import de.uka.ilkd.key.logic.op.JFunction;
 import de.uka.ilkd.key.logic.op.SchemaVariable;
 import de.uka.ilkd.key.rule.MatchConditions;
@@ -15,9 +17,10 @@ import org.key_project.util.collection.ImmutableArray;
 
 import java.util.ArrayList;
 
+/**
+ * Converts a method call into a {@link MethodName} and instantiates {@code newMethodName} with it.
+ */
 public class GetMethodNameCondition implements VariableCondition {
-    public final static String NAME = "\\newMethodName";
-
     private final SchemaVariable newMethodName;
     private final SchemaVariable objName;
     private final SchemaVariable methodName;
@@ -36,17 +39,21 @@ public class GetMethodNameCondition implements VariableCondition {
                                  MatchConditions mc,
                                  Services services) {
         SVInstantiations svInst = mc.getInstantiations();
+        var ec = svInst.getContextInstantiation().activeStatementContext();
         var methodLDT = services.getTypeConverter().getMethodLDT();
         ReferencePrefix fnInst = (ReferencePrefix) svInst.getInstantiation(this.objName);
         MethodName mnInst = (MethodName) svInst.getInstantiation(this.methodName);
         ImmutableArray<ProgramElement> paramsInst =
                 (ImmutableArray<ProgramElement>) svInst.getInstantiation(this.params);
-        if (fnInst == null || mnInst == null || paramsInst == null) {
+        if (mnInst == null || paramsInst == null || ec == null) {
             return mc;
         }
-        // TODO: Make sure to handle 'this' and empty fnInst here too (Use ExecutionContext similar to
-        //  MayExpandMethodCondition.java)
-        final var fieldType = services.getTypeConverter().getKeYJavaType((Expression) fnInst).getFullName();
+        String fieldType = null;
+        if (fnInst == null || fnInst instanceof ThisReference || fnInst instanceof SuperReference) {
+            fieldType = services.getTypeConverter().getKeYJavaType((Expression) ec.getRuntimeInstance()).getFullName();
+        } else {
+            fieldType = services.getTypeConverter().getKeYJavaType((Expression) fnInst).getFullName();
+        }
         final var paramsArr = toExpArray(paramsInst);
         var paramTypes = new ArrayList<String>();
         for (Expression p : paramsArr) {

@@ -9,7 +9,7 @@ public class EventUpdate extends AbstractSortedOperator {
     public static final Operator instance = new EventUpdate(new Name("\\eventUpdate"));
 
     private EventUpdate(Name name) {
-        super(name, new Sort[] { JavaDLTheory.ANY }, JavaDLTheory.UPDATE, false);
+        super(name, new Sort[]{JavaDLTheory.ANY, JavaDLTheory.ANY}, JavaDLTheory.UPDATE, false);
     }
 
     @Override

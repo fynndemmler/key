@@ -3,11 +3,6 @@
  * SPDX-License-Identifier: GPL-2.0-only */
 package de.uka.ilkd.key.logic;
 
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import de.uka.ilkd.key.java.Services;
 import de.uka.ilkd.key.java.TypeConverter;
 import de.uka.ilkd.key.java.abstraction.KeYJavaType;
@@ -27,13 +22,16 @@ import de.uka.ilkd.key.proof.OpReplacer;
 import de.uka.ilkd.key.rule.inst.SVInstantiations.UpdateLabelPair;
 import de.uka.ilkd.key.speclang.HeapContext;
 import de.uka.ilkd.key.strategy.quantifierHeuristics.Metavariable;
-
 import org.key_project.logic.Name;
 import org.key_project.logic.TermCreationException;
 import org.key_project.logic.op.Function;
 import org.key_project.logic.sort.Sort;
 import org.key_project.util.collection.*;
-import org.key_project.util.collection.Pair;
+
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -84,13 +82,13 @@ public class TermBuilder {
      * Parses the given string that represents the term (or createTerm) using the provided
      * namespaces.
      *
-     * @param s the String to parse
+     * @param s          the String to parse
      * @param namespaces the namespaces used for name lookup.
      * @throws ParserException if the given String cannot be parsed
      */
     public Term parseTerm(String s, NamespaceSet namespaces) throws ParserException {
         final AbbrevMap abbr =
-            (services.getProof() == null) ? null : services.getProof().abbreviations();
+                (services.getProof() == null) ? null : services.getProof().abbreviations();
         final KeyIO parser = new KeyIO(services, namespaces);
         parser.setAbbrevMap(abbr);
         return parser.parseExpression(s);
@@ -121,7 +119,7 @@ public class TermBuilder {
      *
      * @param baseName The base name (prefix) for the name to generate.
      * @return An available name constructed by affixing a counter to the passed base name, or some
-     *         available free name (please consult comment above).
+     * available free name (please consult comment above).
      * @see #newName(String, NamespaceSet)
      */
     public String newName(String baseName) {
@@ -137,10 +135,10 @@ public class TermBuilder {
      * introduced (and saved) new name. In this case, the order of new names in the saved proof file
      * matters (the first unused name is returned, regardless of the baseName).
      *
-     * @param baseName The base name (prefix) for the name to generate.
+     * @param baseName       The base name (prefix) for the name to generate.
      * @param localNamespace The local {@link NamespaceSet} to check.
      * @return An available name constructed by affixing a counter to the passed base name, or some
-     *         available free name (please consult comment above).
+     * available free name (please consult comment above).
      */
     public String newName(String baseName, NamespaceSet localNamespace) {
         final Name savedName = services.getNameRecorder().getProposal();
@@ -196,7 +194,7 @@ public class TermBuilder {
      * Creates a program variable for "self". Take care to register it in the namespaces!
      */
     public LocationVariable selfVar(IProgramMethod pm, KeYJavaType kjt, boolean makeNameUnique,
-            String postfix) {
+                                    String postfix) {
         if (pm.isStatic()) {
             return null;
         } else {
@@ -219,7 +217,7 @@ public class TermBuilder {
      * Creates program variables for the parameters. Take care to register them in the namespaces!
      */
     public ImmutableList<LocationVariable> paramVars(IObserverFunction obs,
-            boolean makeNamesUnique) {
+                                                     boolean makeNamesUnique) {
         ImmutableList<LocationVariable> result = ImmutableSLList.nil();
         for (int i = 0, n = obs.getNumParams(); i < n; i++) {
             final KeYJavaType paramType = obs.getParamType(i);
@@ -240,7 +238,7 @@ public class TermBuilder {
      * Creates program variables for the parameters. Take care to register them in the namespaces!
      */
     public ImmutableList<LocationVariable> paramVars(String postfix, IObserverFunction obs,
-            boolean makeNamesUnique) {
+                                                     boolean makeNamesUnique) {
         final ImmutableList<LocationVariable> paramVars = paramVars(obs, makeNamesUnique);
         ImmutableList<LocationVariable> result = ImmutableSLList.nil();
         for (LocationVariable paramVar : paramVars) {
@@ -285,7 +283,7 @@ public class TermBuilder {
      */
     public LocationVariable excVar(String name, IProgramMethod pm, boolean makeNameUnique) {
         return locationVariable(name,
-            services.getJavaInfo().getTypeByClassName(JAVA_LANG_THROWABLE), makeNameUnique);
+                services.getJavaInfo().getTypeByClassName(JAVA_LANG_THROWABLE), makeNameUnique);
     }
 
     /**
@@ -300,8 +298,8 @@ public class TermBuilder {
      * Creates a location variable for prestate variables. Take care to register it in the
      * namespaces.
      *
-     * @param baseName the base name to use
-     * @param sort the sort of the variable
+     * @param baseName       the base name to use
+     * @param sort           the sort of the variable
      * @param makeNameUnique whether to change the base name to be unique
      * @return a location variable for the given name and type
      */
@@ -313,8 +311,8 @@ public class TermBuilder {
      * Creates a location variable for prestate variables. Take care to register it in the
      * namespaces.
      *
-     * @param baseName the base name to use
-     * @param kjt the type of the variable
+     * @param baseName       the base name to use
+     * @param kjt            the type of the variable
      * @param makeNameUnique whether to change the base name to be unique
      * @return a location variable for the given name and type
      */
@@ -326,8 +324,8 @@ public class TermBuilder {
      * Creates a location variable for example for prestate variables. Take care to register it in
      * the namespaces.
      *
-     * @param baseName the base name to use
-     * @param sort the sort of the variable
+     * @param baseName       the base name to use
+     * @param sort           the sort of the variable
      * @param makeNameUnique whether to change the base name to be unique
      * @return a location variable for the given name and type
      */
@@ -339,13 +337,13 @@ public class TermBuilder {
      * Creates a location variable for example for prestate variables. Take care to register it in
      * the namespaces.
      *
-     * @param baseName the base name to use
-     * @param kjt the type of the variable
+     * @param baseName       the base name to use
+     * @param kjt            the type of the variable
      * @param makeNameUnique whether to change the base name to be unique
      * @return a location variable for the given name and type
      */
     public LocationVariable locationVariable(String baseName, KeYJavaType kjt,
-            boolean makeNameUnique) {
+                                             boolean makeNameUnique) {
         if (makeNameUnique) {
             baseName = newName(baseName);
         }
@@ -449,12 +447,12 @@ public class TermBuilder {
     // }
 
     public Term prog(Modality.JavaModalityKind modKind, JavaBlock jb, Term t) {
-        return tf.createTerm(Modality.getModality(modKind, jb), new Term[] { t }, null, null);
+        return tf.createTerm(Modality.getModality(modKind, jb), new Term[]{t}, null, null);
     }
 
     public Term prog(Modality.JavaModalityKind modKind, JavaBlock jb, Term t,
-            ImmutableArray<TermLabel> labels) {
-        return tf.createTerm(Modality.getModality(modKind, jb), new Term[] { t }, null, labels);
+                     ImmutableArray<TermLabel> labels) {
+        return tf.createTerm(Modality.getModality(modKind, jb), new Term[]{t}, null, labels);
     }
 
     public Term box(JavaBlock jb, Term t) {
@@ -474,8 +472,8 @@ public class TermBuilder {
      */
     public Term ifEx(QuantifiableVariable qv, Term cond, Term _then, Term _else) {
         return tf.createTerm(IfExThenElse.IF_EX_THEN_ELSE,
-            new ImmutableArray<>(cond, _then, _else),
-            new ImmutableArray<>(qv), null);
+                new ImmutableArray<>(cond, _then, _else),
+                new ImmutableArray<>(qv), null);
     }
 
     /**
@@ -506,7 +504,7 @@ public class TermBuilder {
 
     public Term all(QuantifiableVariable qv, Term t) {
         return tf.createTerm(Quantifier.ALL, new ImmutableArray<>(t),
-            new ImmutableArray<>(qv), null);
+                new ImmutableArray<>(qv), null);
     }
 
     public Term all(Iterable<QuantifiableVariable> qvs, Term t) {
@@ -535,7 +533,7 @@ public class TermBuilder {
 
     public Term ex(QuantifiableVariable qv, Term t) {
         return tf.createTerm(Quantifier.EX, new ImmutableArray<>(t),
-            new ImmutableArray<>(qv), null);
+                new ImmutableArray<>(qv), null);
     }
 
     public Term ex(Iterable<QuantifiableVariable> qvs, Term t) {
@@ -548,7 +546,7 @@ public class TermBuilder {
 
     public Term bsum(QuantifiableVariable qv, Term a, Term b, Term t) {
         JFunction bsum = services.getTypeConverter().getIntegerLDT().getBsum();
-        return func(bsum, new Term[] { a, b, t }, new ImmutableArray<>(qv));
+        return func(bsum, new Term[]{a, b, t}, new ImmutableArray<>(qv));
     }
 
     /**
@@ -557,10 +555,10 @@ public class TermBuilder {
     public Term sum(ImmutableList<LogicVariable> qvs, Term range, Term t) {
         final JFunction sum = services.getNamespaces().functions().lookup("sum");
         final Iterator<LogicVariable> it = qvs.iterator();
-        Term res = func(sum, new Term[] { convertToBoolean(range), t },
-            new ImmutableArray<>(it.next()));
+        Term res = func(sum, new Term[]{convertToBoolean(range), t},
+                new ImmutableArray<>(it.next()));
         while (it.hasNext()) {
-            res = func(sum, new Term[] { TRUE(), res }, new ImmutableArray<>(it.next()));
+            res = func(sum, new Term[]{TRUE(), res}, new ImmutableArray<>(it.next()));
         }
         return res;
     }
@@ -570,21 +568,21 @@ public class TermBuilder {
      */
     public Term bprod(QuantifiableVariable qv, Term a, Term b, Term t, Services services) {
         JFunction bprod = services.getTypeConverter().getIntegerLDT().getBprod();
-        return func(bprod, new Term[] { a, b, t }, new ImmutableArray<>(qv));
+        return func(bprod, new Term[]{a, b, t}, new ImmutableArray<>(qv));
     }
 
     /**
      * General (unbounded) product
      */
     public Term prod(ImmutableList<LogicVariable> qvs, Term range, Term t,
-            TermServices services) {
+                     TermServices services) {
         final JFunction prod = services.getNamespaces().functions().lookup("prod");
         final Iterator<LogicVariable> it = qvs.iterator();
-        Term res = func(prod, new Term[] { convertToBoolean(range), t },
-            new ImmutableArray<>(it.next()));
-        while (it.hasNext()) {
-            res = func(prod, new Term[] { TRUE(), res },
+        Term res = func(prod, new Term[]{convertToBoolean(range), t},
                 new ImmutableArray<>(it.next()));
+        while (it.hasNext()) {
+            res = func(prod, new Term[]{TRUE(), res},
+                    new ImmutableArray<>(it.next()));
         }
         return res;
     }
@@ -593,14 +591,14 @@ public class TermBuilder {
      * minimum operator
      */
     public Term min(ImmutableList<? extends QuantifiableVariable> qvs, Term range, Term t,
-            TermServices services) {
+                    TermServices services) {
         final JFunction min = services.getNamespaces().functions().lookup("min");
         final Iterator<? extends QuantifiableVariable> it = qvs.iterator();
-        Term res = func(min, new Term[] { convertToBoolean(range), t },
-            new ImmutableArray<>(it.next()));
-        while (it.hasNext()) {
-            res = func(min, new Term[] { TRUE(), res },
+        Term res = func(min, new Term[]{convertToBoolean(range), t},
                 new ImmutableArray<>(it.next()));
+        while (it.hasNext()) {
+            res = func(min, new Term[]{TRUE(), res},
+                    new ImmutableArray<>(it.next()));
         }
         return res;
     }
@@ -609,13 +607,13 @@ public class TermBuilder {
      * minimum operator
      */
     public Term max(ImmutableList<? extends QuantifiableVariable> qvs, Term range, Term t,
-            TermServices services) {
+                    TermServices services) {
         final JFunction max = services.getNamespaces().functions().lookup("max");
         final Iterator<? extends QuantifiableVariable> it = qvs.iterator();
-        Term res = func(max, new Term[] { convertToBoolean(range), t },
-            new ImmutableArray<>(it.next()));
+        Term res = func(max, new Term[]{convertToBoolean(range), t},
+                new ImmutableArray<>(it.next()));
         while (it.hasNext()) {
-            res = func(max, new Term[] { TRUE(), res }, new ImmutableArray<>(it.next()));
+            res = func(max, new Term[]{TRUE(), res}, new ImmutableArray<>(it.next()));
         }
         return res;
     }
@@ -794,13 +792,13 @@ public class TermBuilder {
     /**
      * Creates a substitution term
      *
-     * @param substVar the QuantifiableVariable to be substituted
+     * @param substVar  the QuantifiableVariable to be substituted
      * @param substTerm the Term that replaces substVar
-     * @param origTerm the Term that is substituted
+     * @param origTerm  the Term that is substituted
      */
     public Term subst(SubstOp op, QuantifiableVariable substVar, Term substTerm, Term origTerm) {
         return tf.createTerm(op, new ImmutableArray<>(substTerm, origTerm),
-            new ImmutableArray<>(substVar), null);
+                new ImmutableArray<>(substVar), null);
     }
 
     public Term subst(QuantifiableVariable substVar, Term substTerm, Term origTerm) {
@@ -813,7 +811,7 @@ public class TermBuilder {
 
     public Term exactInstance(Sort s, Term t) {
         return equals(func(services.getJavaDLTheory().getExactInstanceofSymbol(s, services), t),
-            TRUE());
+                TRUE());
     }
 
     // Functions for wellfoundedness
@@ -824,7 +822,7 @@ public class TermBuilder {
         final JFunction f = funcNS.lookup(new Name("pair"));
         if (f == null) {
             throw new RuntimeException("LDT: Function pair not found.\n"
-                + "It seems that there are definitions missing from the .key files.");
+                    + "It seems that there are definitions missing from the .key files.");
         }
 
         return func(f, first, second);
@@ -836,7 +834,7 @@ public class TermBuilder {
         final JFunction f = funcNS.lookup(new Name("prec"));
         if (f == null) {
             throw new RuntimeException("LDT: Function prec not found.\n"
-                + "It seems that there are definitions missing from the .key files.");
+                    + "It seems that there are definitions missing from the .key files.");
         }
 
         return func(f, mby, mbyAtPre);
@@ -847,7 +845,7 @@ public class TermBuilder {
         final JFunction f = funcNS.lookup(new Name("measuredByCheck"));
         if (f == null) {
             throw new RuntimeException("LDT: Function measuredByCheck not found.\n"
-                + "It seems that there are definitions missing from the .key files.");
+                    + "It seems that there are definitions missing from the .key files.");
         }
         return func(f, mby);
     }
@@ -857,7 +855,7 @@ public class TermBuilder {
         final JFunction f = funcNS.lookup(new Name("measuredBy"));
         if (f == null) {
             throw new RuntimeException("LDT: Function measuredBy not found.\n"
-                + "It seems that there are definitions missing from the .key files.");
+                    + "It seems that there are definitions missing from the .key files.");
         }
         return func(f, mby);
     }
@@ -867,7 +865,7 @@ public class TermBuilder {
         final JFunction f = funcNS.lookup(new Name("measuredByEmpty"));
         if (f == null) {
             throw new RuntimeException("LDT: Function measuredByEmpty not found.\n"
-                + "It seems that there are definitions missing from the .key files.");
+                    + "It seems that there are definitions missing from the .key files.");
         }
         return f;
     }
@@ -905,7 +903,7 @@ public class TermBuilder {
             return equals(a, TRUE());
         } else {
             throw new TermCreationException(
-                "Term " + a + " cannot be converted" + " into a formula.");
+                    "Term " + a + " cannot be converted" + " into a formula.");
         }
     }
 
@@ -924,7 +922,7 @@ public class TermBuilder {
             return ife(a, TRUE(), FALSE());
         } else {
             throw new TermCreationException(
-                "Term " + a + " cannot be converted" + " into a boolean.");
+                    "Term " + a + " cannot be converted" + " into a boolean.");
         }
     }
 
@@ -959,8 +957,8 @@ public class TermBuilder {
             // { ({a:=1} b) :=a}
             // The latter is (currently) not supported, hence the exception.
             throw new TermCreationException("lhs cannot have a nested update. "
-                + "If you have a nested update like '{{a:=1} b:=a}', "
-                + "replace it with the bracketed version '{{a:=1} (b:=a)}'.");
+                    + "If you have a nested update like '{{a:=1} b:=a}', "
+                    + "replace it with the bracketed version '{{a:=1} (b:=a)}'.");
         } else {
             throw new TermCreationException("Not a legal lhs: " + lhs);
         }
@@ -1003,7 +1001,7 @@ public class TermBuilder {
     public Term parallel(Term[] lhss, Term[] values) {
         if (lhss.length != values.length) {
             throw new TermCreationException("Tried to create parallel update with " + lhss.length
-                + " locs and " + values.length + " values");
+                    + " locs and " + values.length + " values");
         }
         Term[] updates = new Term[lhss.length];
         for (int i = 0; i < updates.length; i++) {
@@ -1098,7 +1096,7 @@ public class TermBuilder {
     }
 
     public Term applyParallel(ImmutableList<Term> updates, Term target,
-            ImmutableArray<TermLabel> labels) {
+                              ImmutableArray<TermLabel> labels) {
         return apply(parallel(updates), target, labels);
     }
 
@@ -1128,8 +1126,8 @@ public class TermBuilder {
             return target;
         } else {
             return apply(updates.head().update(),
-                applyUpdatePairsSequential(updates.tail(), target),
-                updates.head().updateApplicationlabels());
+                    applyUpdatePairsSequential(updates.tail(), target),
+                    updates.head().updateApplicationlabels());
         }
     }
 
@@ -1229,7 +1227,7 @@ public class TermBuilder {
      */
     public Term zTerm(String numberString) {
         return func(services.getTypeConverter().getIntegerLDT().getNumberSymbol(),
-            numberTerm(numberString));
+                numberTerm(numberString));
     }
 
     /**
@@ -1249,7 +1247,7 @@ public class TermBuilder {
      */
     public Term cTerm(String numberString) {
         return func(services.getTypeConverter().getIntegerLDT().getCharSymbol(),
-            numberTerm(numberString));
+                numberTerm(numberString));
     }
 
     /**
@@ -1412,8 +1410,8 @@ public class TermBuilder {
 
     public Term infiniteUnion(QuantifiableVariable[] qvs, Term s) {
         final LocSetLDT ldt = services.getTypeConverter().getLocSetLDT();
-        return tf.createTerm(ldt.getInfiniteUnion(), new Term[] { s },
-            new ImmutableArray<>(qvs), null);
+        return tf.createTerm(ldt.getInfiniteUnion(), new Term[]{s},
+                new ImmutableArray<>(qvs), null);
     }
 
     public Term infiniteUnion(QuantifiableVariable[] qvs, Term guard, Term s) {
@@ -1489,7 +1487,7 @@ public class TermBuilder {
 
     // The template of the well-definedness transformer for formulas.
     public static final Transformer WD_FORMULA =
-        new Transformer(new Name("WD"), JavaDLTheory.FORMULA);
+            new Transformer(new Name("WD"), JavaDLTheory.FORMULA);
 
     public Term wd(Term t) {
         if (t.op() == Junctor.FALSE || t.op() == Junctor.TRUE) {
@@ -1545,7 +1543,7 @@ public class TermBuilder {
 
     public Term permissionsFor(Term permHeap, Term regularHeap) {
         return func(services.getTypeConverter().getPermissionLDT().getPermissionsFor(), permHeap,
-            regularHeap);
+                regularHeap);
     }
 
     public Term permissionsFor(LocationVariable permHeap, LocationVariable regularHeap) {
@@ -1623,7 +1621,7 @@ public class TermBuilder {
      */
     public Term select(Sort asSort, Term h, Term o, LocationVariable field) {
         final JFunction f =
-            services.getTypeConverter().getHeapLDT().getFieldSymbolForPV(field, services);
+                services.getTypeConverter().getHeapLDT().getFieldSymbolForPV(field, services);
         return select(asSort, h, o, func(f));
     }
 
@@ -1644,7 +1642,7 @@ public class TermBuilder {
 
     public Term dot(Sort asSort, Term o, LocationVariable field) {
         final JFunction f =
-            services.getTypeConverter().getHeapLDT().getFieldSymbolForPV(field, services);
+                services.getTypeConverter().getHeapLDT().getFieldSymbolForPV(field, services);
         return dot(asSort, o, f);
     }
 
@@ -1669,7 +1667,7 @@ public class TermBuilder {
      * The labels are not added to heap variables.
      * </p>
      *
-     * @param term term to label.
+     * @param term   term to label.
      * @param labels the labels to apply.
      * @return a labeled term.
      */
@@ -1688,7 +1686,7 @@ public class TermBuilder {
 
 
         Term result =
-            tf.createTerm(term.op(), newSubs, term.boundVars(), term.getLabels());
+                tf.createTerm(term.op(), newSubs, term.boundVars(), term.getLabels());
         result = addLabel(result, labels);
         return result;
     }
@@ -1700,7 +1698,7 @@ public class TermBuilder {
      * The label is not added to heap variables.
      * </p>
      *
-     * @param term term to label.
+     * @param term  term to label.
      * @param label the label to apply.
      * @return a labeled term.
      */
@@ -1711,7 +1709,7 @@ public class TermBuilder {
     /**
      * Adds labels to a term, removing any existing labels of the same type.
      *
-     * @param term the term.
+     * @param term   the term.
      * @param labels the labels to add.
      * @return the term with the labels added.
      */
@@ -1720,7 +1718,7 @@ public class TermBuilder {
             return term;
         } else if (!term.hasLabels()) {
             return tf.createTerm(term.op(), term.subs(), term.boundVars(),
-                labels);
+                    labels);
         } else {
             List<TermLabel> newLabelList = term.getLabels().toList();
 
@@ -1738,14 +1736,14 @@ public class TermBuilder {
             }
 
             return tf.createTerm(term.op(), term.subs(), term.boundVars(),
-                new ImmutableArray<>(newLabelList));
+                    new ImmutableArray<>(newLabelList));
         }
     }
 
     /**
      * Adds a label to a term, removing any existing labels of the same type.
      *
-     * @param term the term.
+     * @param term  the term.
      * @param label the label to add.
      * @return the term with the label added.
      */
@@ -1760,7 +1758,7 @@ public class TermBuilder {
     /**
      * Applies labels to a term, removing any existing labels.
      *
-     * @param term the term.
+     * @param term   the term.
      * @param labels the labels to apply.
      * @return the modified term.
      */
@@ -1769,14 +1767,14 @@ public class TermBuilder {
             return term;
         } else {
             return tf.createTerm(term.op(), term.subs(), term.boundVars(),
-                labels);
+                    labels);
         }
     }
 
     /**
      * Applies a label to a term, removing any existing labels.
      *
-     * @param term the term.
+     * @param term  the term.
      * @param label the label to apply.
      * @return the modified term.
      */
@@ -1807,8 +1805,8 @@ public class TermBuilder {
     public Term dotArr(Term ref, Term idx) {
         if (ref == null || idx == null) {
             throw new TermCreationException(
-                "Tried to build an array access " + "term without providing an "
-                    + (ref == null ? "array reference." : "index.") + "(" + ref + "[" + idx + "])");
+                    "Tried to build an array access " + "term without providing an "
+                            + (ref == null ? "array reference." : "index.") + "(" + ref + "[" + idx + "])");
         }
 
         final Sort elementSort;
@@ -1816,9 +1814,9 @@ public class TermBuilder {
             elementSort = ((ArraySort) ref.sort()).elementSort();
         } else {
             throw new TermCreationException(String.format(
-                "Tried to build an array access on an inacceptable sort: "
-                    + "Sort: %s : %s with %s[%s] ",
-                ref.sort(), ref.sort().getClass().getSimpleName(), ref, idx));
+                    "Tried to build an array access on an inacceptable sort: "
+                            + "Sort: %s : %s with %s[%s] ",
+                    ref.sort(), ref.sort().getClass().getSimpleName(), ref, idx));
         }
 
         return select(elementSort, getBaseHeap(), ref, arr(idx));
@@ -1832,8 +1830,8 @@ public class TermBuilder {
     public Term created(Term h, Term o) {
         final TypeConverter tc = services.getTypeConverter();
         return equals(
-            select(tc.getBooleanLDT().targetSort(), h, o, func(tc.getHeapLDT().getCreated())),
-            TRUE());
+                select(tc.getBooleanLDT().targetSort(), h, o, func(tc.getHeapLDT().getCreated())),
+                TRUE());
     }
 
     public Term created(Term o) {
@@ -1843,31 +1841,31 @@ public class TermBuilder {
     public Term initialized(Term o) {
         final TypeConverter tc = services.getTypeConverter();
         return equals(dot(tc.getBooleanLDT().targetSort(), o, tc.getHeapLDT().getInitialized()),
-            TRUE());
+                TRUE());
     }
 
     public Term classPrepared(Sort classSort) {
         final TypeConverter tc = services.getTypeConverter();
         return equals(staticDot(tc.getBooleanLDT().targetSort(),
-            tc.getHeapLDT().getClassPrepared(classSort, services)), TRUE());
+                tc.getHeapLDT().getClassPrepared(classSort, services)), TRUE());
     }
 
     public Term classInitialized(Sort classSort) {
         final TypeConverter tc = services.getTypeConverter();
         return equals(staticDot(tc.getBooleanLDT().targetSort(),
-            tc.getHeapLDT().getClassInitialized(classSort, services)), TRUE());
+                tc.getHeapLDT().getClassInitialized(classSort, services)), TRUE());
     }
 
     public Term classInitializationInProgress(Sort classSort) {
         final TypeConverter tc = services.getTypeConverter();
         return equals(staticDot(tc.getBooleanLDT().targetSort(),
-            tc.getHeapLDT().getClassInitializationInProgress(classSort, services)), TRUE());
+                tc.getHeapLDT().getClassInitializationInProgress(classSort, services)), TRUE());
     }
 
     public Term classErroneous(Sort classSort) {
         final TypeConverter tc = services.getTypeConverter();
         return equals(staticDot(tc.getBooleanLDT().targetSort(),
-            tc.getHeapLDT().getClassErroneous(classSort, services)), TRUE());
+                tc.getHeapLDT().getClassErroneous(classSort, services)), TRUE());
     }
 
     public Term store(Term h, Term o, Term f, Term v) {
@@ -1875,7 +1873,7 @@ public class TermBuilder {
     }
 
     public Term create(Term h, Term o) {
-        return func(services.getTypeConverter().getHeapLDT().getCreate(), new Term[] { h, o });
+        return func(services.getTypeConverter().getHeapLDT().getCreate(), new Term[]{h, o});
     }
 
     public Term anon(Term h1, Term s, Term h2) {
@@ -1892,7 +1890,7 @@ public class TermBuilder {
 
     public Term arrayStore(Term o, Term i, Term v) {
         return store(getBaseHeap(), o, func(services.getTypeConverter().getHeapLDT().getArr(), i),
-            v);
+                v);
     }
 
     public Term reachableValue(Term h, Term t, KeYJavaType kjt) {
@@ -1942,16 +1940,16 @@ public class TermBuilder {
         // narrowing
         // does not follow Java typing for the permission heap
         boolean permissionHeap =
-            heapTerm.op() == services.getTypeConverter().getHeapLDT().getPermissionHeap();
+                heapTerm.op() == services.getTypeConverter().getHeapLDT().getPermissionHeap();
         return all(quantVars, or(elementOf(objVarTerm, fieldVarTerm, modifiableAtPre),
-            and(not(equals(objVarTerm, NULL())), not(createdAtPre)),
-            equals(
-                select(permissionHeap ? services.getTypeConverter().getPermissionLDT().targetSort()
-                        : JavaDLTheory.ANY,
-                    heapTerm, objVarTerm, fieldVarTerm),
-                select(permissionHeap ? services.getTypeConverter().getPermissionLDT().targetSort()
-                        : JavaDLTheory.ANY,
-                    or.replace(heapTerm), objVarTerm, fieldVarTerm))));
+                and(not(equals(objVarTerm, NULL())), not(createdAtPre)),
+                equals(
+                        select(permissionHeap ? services.getTypeConverter().getPermissionLDT().targetSort()
+                                        : JavaDLTheory.ANY,
+                                heapTerm, objVarTerm, fieldVarTerm),
+                        select(permissionHeap ? services.getTypeConverter().getPermissionLDT().targetSort()
+                                        : JavaDLTheory.ANY,
+                                or.replace(heapTerm), objVarTerm, fieldVarTerm))));
     }
 
     /**
@@ -1979,16 +1977,16 @@ public class TermBuilder {
 
         // see above
         boolean permissionHeap =
-            heapTerm.op() == services.getTypeConverter().getHeapLDT().getPermissionHeap();
+                heapTerm.op() == services.getTypeConverter().getHeapLDT().getPermissionHeap();
 
         return all(quantVars,
-            equals(
-                select(permissionHeap ? services.getTypeConverter().getPermissionLDT().targetSort()
-                        : JavaDLTheory.ANY,
-                    heapTerm, objVarTerm, fieldVarTerm),
-                select(permissionHeap ? services.getTypeConverter().getPermissionLDT().targetSort()
-                        : JavaDLTheory.ANY,
-                    or.replace(heapTerm), objVarTerm, fieldVarTerm)));
+                equals(
+                        select(permissionHeap ? services.getTypeConverter().getPermissionLDT().targetSort()
+                                        : JavaDLTheory.ANY,
+                                heapTerm, objVarTerm, fieldVarTerm),
+                        select(permissionHeap ? services.getTypeConverter().getPermissionLDT().targetSort()
+                                        : JavaDLTheory.ANY,
+                                or.replace(heapTerm), objVarTerm, fieldVarTerm)));
     }
 
     public Term anonUpd(LocationVariable heap, Term modifiable, Term anonHeap) {
@@ -2090,8 +2088,8 @@ public class TermBuilder {
     /**
      * Replaces a child term by another one.
      *
-     * @param term the term in which to perform the replacement.
-     * @param pos the position at which to perform the replacement.
+     * @param term        the term in which to perform the replacement.
+     * @param pos         the position at which to perform the replacement.
      * @param replacement the replacement term.
      * @return {@code term}, with the child at {@code pos} replaced by {@code replacement}.
      */
@@ -2116,7 +2114,7 @@ public class TermBuilder {
         }
 
         return tf.createTerm(term.op(), newSubs, term.boundVars(),
-            term.getLabels());
+                term.getLabels());
     }
 
     public ImmutableSet<Term> unionToSet(Term s) {
@@ -2160,8 +2158,8 @@ public class TermBuilder {
     }
 
     public Term seqDef(QuantifiableVariable qv, Term a, Term b, Term t) {
-        return func(services.getTypeConverter().getSeqLDT().getSeqDef(), new Term[] { a, b, t },
-            new ImmutableArray<>(qv));
+        return func(services.getTypeConverter().getSeqLDT().getSeqDef(), new Term[]{a, b, t},
+                new ImmutableArray<>(qv));
     }
 
     public Term values() {
@@ -2315,7 +2313,7 @@ public class TermBuilder {
      * add origin information to the term and all its sub terms
      * nothing will be done if no origin term label factory is present
      *
-     * @param term the term where to start to add the origin information
+     * @param term   the term where to start to add the origin information
      * @param origin the Origin information
      * @return the labeled term or the same term, if no origin term label factory is present
      */
@@ -2331,7 +2329,7 @@ public class TermBuilder {
      * add origin information to the term
      * nothing will be done if no origin term label factory is present
      *
-     * @param term the term where to add the origin information
+     * @param term   the term where to add the origin information
      * @param origin the Origin information
      * @return the labeled term or the same term, if no origin term label factory is present
      */
@@ -2352,7 +2350,7 @@ public class TermBuilder {
         return services.getOriginFactory();
     }
 
-    public Term eventUpdate(Term evt) {
-        return tf.createTerm(EventUpdate.instance, evt);
+    public Term eventUpdate(Term evt, Term evtNr) {
+        return tf.createTerm(EventUpdate.instance, evt, evtNr);
     }
 }

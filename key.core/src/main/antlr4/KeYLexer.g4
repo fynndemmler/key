@@ -233,6 +233,8 @@ INVARIANTS : '\\invariants';
 EVENT : '\\event';
 EVENT_SEQ : '\\eventSeq';
 EVENT_UPDATE : '\\eventUpdate';
+IS_EVENT_UPDATE: '\\isEventUpdate';
+CONTAINS_EVENT: '\\containsEvent';
 
 // Taclet annotations (see TacletAnnotations.java for more details)
 LEMMA : '\\lemma';

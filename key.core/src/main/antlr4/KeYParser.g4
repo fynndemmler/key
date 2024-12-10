@@ -208,6 +208,7 @@ one_schema_modal_op_decl
 pred_decl
 :
   doc=DOC_COMMENT?
+  nonRigid=NON_RIGID?
   pred_name = funcpred_name
   (whereToBind=where_to_bind)?
   argSorts=arg_sorts

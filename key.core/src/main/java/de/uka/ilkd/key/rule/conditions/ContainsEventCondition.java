@@ -30,7 +30,7 @@ public class ContainsEventCondition extends VariableConditionAdapter {
         SortCollector collector = new SortCollector();
         formulaT.execPostOrder(collector);
         for (var op : collector.getSorts()) {
-            if (op instanceof Event) {
+            if (op.name().toString().equals("Event")) {
                 return !negated;
             }
         }

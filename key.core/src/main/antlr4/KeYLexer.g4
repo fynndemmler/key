@@ -218,6 +218,7 @@ FUNCTIONS : '\\functions';
 DATATYPES : '\\datatypes';
 TRANSFORMERS : '\\transformers';
 UNIQUE : '\\unique';
+NON_RIGID : '\\nonRigid';
 FREE : '\\free';
 
 RULES : '\\rules';

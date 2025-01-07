@@ -237,6 +237,7 @@ EVENT_SEQ : '\\eventSeq';
 EVENT_UPDATE : '\\eventUpdate';
 IS_EVENT_UPDATE: '\\isEventUpdate';
 CONTAINS_EVENT: '\\containsEvent';
+DROP_EL_EVENT_UPDATES : '\\dropEffectlessEventUpdates';
 
 // Taclet annotations (see TacletAnnotations.java for more details)
 LEMMA : '\\lemma';

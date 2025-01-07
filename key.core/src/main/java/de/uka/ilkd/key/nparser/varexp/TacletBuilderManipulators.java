@@ -307,6 +307,8 @@ public class TacletBuilderManipulators {
             new ConstructorBasedBuilder("isEventUpdate", IsEventUpdateCondition.class, SV);
     public static final AbstractConditionBuilder CONTAINS_EVENT =
             new ConstructorBasedBuilder("containsEvent", ContainsEventCondition.class, SV);
+    public static final AbstractConditionBuilder DROP_EL_EVENT_UPDATES =
+            new ConstructorBasedBuilder("dropEffectlessEventUpdates", DropEffectlessEventUpdatesCondition.class, USV, SV, SV);
 
     static class JavaTypeToSortConditionBuilder extends AbstractConditionBuilder {
         private final boolean elmen;
@@ -394,7 +396,7 @@ public class TacletBuilderManipulators {
         register(STORE_TERM_IN, STORE_STMT_IN, HAS_INVARIANT, GET_INVARIANT, GET_FREE_INVARIANT,
                 GET_VARIANT, IS_LABELED);
         // Event Sequences
-        register(GET_METHOD_NAME, GET_OBJECT, GET_PARAMS, IS_EVENT_UPDATE, CONTAINS_EVENT);
+        register(GET_METHOD_NAME, GET_OBJECT, GET_PARAMS, IS_EVENT_UPDATE, CONTAINS_EVENT, DROP_EL_EVENT_UPDATES);
 
         loadWithServiceLoader();
     }

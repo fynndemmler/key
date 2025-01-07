@@ -286,6 +286,11 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
             add(longConst(-7000), ScaleFeature.createScaled(FindDepthFeature.INSTANCE, 10.0)));
         bindRuleSet(d, "update_join", -4600);
         bindRuleSet(d, "update_apply", -4500);
+        /* Shifting for event updates, e.g. shift evtU || u to u || evtU. This is possible as long as u is not
+         * an event update, since event updates only care about the order w.r.t. other event updates. It's important
+         * that the cost is higher for event update shifting than update applications, because any update application
+         * must be handled first, or otherwise they might contain another event update that would be shifted.*/
+        /*bindRuleSet(d, "update_eu_shift", -4400);*/
 
         setUpStringNormalisation(d);
 

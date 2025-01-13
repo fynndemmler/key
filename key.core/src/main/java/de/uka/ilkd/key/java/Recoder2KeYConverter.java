@@ -1215,8 +1215,8 @@ public class Recoder2KeYConverter {
             result = new ProgramMethod(methDecl, containerType, returnKJT, positionInfo(md),
                     heapSort, heapLDT == null ? 1 : heapLDT.getAllHeaps().size() - 1);
             final MethodLDT methodLDT = rec2key.getTypeConverter().getTypeConverter().getMethodLDT();
-            final JFunction method = methodLDT.addMethodSafely(containerType, methDecl);
-            services.getNamespaces().functions().add(method);
+            methodLDT.addMethodSafely(services, containerType, methDecl);
+            methodLDT.reloadConstants(services);
             insertToMap(md, result);
         }
         methodsDeclaring.remove(md);

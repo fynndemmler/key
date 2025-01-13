@@ -40,6 +40,15 @@ public class MethodLDT extends LDT {
         super(NAME, services);
     }
 
+    public void reloadConstants(Services services) {
+        for (var methodConstant : methodNameConstants) {
+            if (services.getNamespaces().functions().contains(methodConstant)) {
+                continue;
+            }
+            services.getNamespaces().functions().add(methodConstant);
+        }
+    }
+
     /**
      * Constructs a JFunction for a given MethodDeclaration methDecl through custom encoding.
      * Since we want a different MethodName for every overload, we need to encode the parameters too.
@@ -50,24 +59,25 @@ public class MethodLDT extends LDT {
      * @param methDecl      The MethodDeclaration to encode.
      * @return The constructed JFunction for the MethodDeclaration.
      */
-    public JFunction addMethodSafely(KeYJavaType containerType, MethodDeclaration methDecl) {
+    public boolean addMethodSafely(Services services, KeYJavaType containerType, MethodDeclaration methDecl) {
         if (containerType == null) {
-            throw new RuntimeException(MethodLDT.class + ": KeYJavaType is null.");
+            return false;
         }
         if (methDecl == null) {
-            throw new RuntimeException(MethodLDT.class + ": MethodDeclaration is null.");
+            return false;
         }
         final String fullTypeName = containerType.getFullName();
         final String methodName = methDecl.getName();
         final Name newMethodName;
         newMethodName = constructMethodName(fullTypeName, methodName, constructParams(methDecl.getParameters()));
         final JFunction method = new JFunction(newMethodName, targetSort(), true, false);
-        if (methodNameConstants.contains(method)) {
-            throw new RuntimeException(MethodLDT.class + ": JFunction '" + method.toString() + "' already exists.");
+        if (methodConstantExists(newMethodName)) {
+            return false;
         }
+        services.getNamespaces().functions().add(method);
         methodNameConstants.add(method);
         System.out.println("Added method: " + method.toString());
-        return method;
+        return true;
     }
 
     /**
@@ -87,6 +97,15 @@ public class MethodLDT extends LDT {
                     + methodNameToFind + "' does not exist.");
         }
         return methodNameConstants.get(methodNameConstants.indexOf(methodNameConstant));
+    }
+
+    private boolean methodConstantExists(Name candidate) {
+        for (var methodConstant : methodNameConstants) {
+            if (methodConstant.name().equals(candidate)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

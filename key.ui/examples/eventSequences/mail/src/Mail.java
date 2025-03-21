@@ -1,4 +1,4 @@
-public class Mail {
+public final class Mail {
     public String content;
-    public boolean isEncrpyted;
+    public boolean isEncrypted;
 }

@@ -33,7 +33,7 @@ public class MethodLDT extends LDT {
 
     private static final String METHOD_DELIM = "#";
     private static final String PARAMS_DELIM = "$";
-    private static final String PARAM_DELIM = "-";
+    private static final String PARAM_DELIM = "_";
     private static List<JFunction> methodNameConstants = new ArrayList<>();
 
     public MethodLDT(Services services) {
@@ -52,7 +52,7 @@ public class MethodLDT extends LDT {
     /**
      * Constructs a JFunction for a given MethodDeclaration methDecl through custom encoding.
      * Since we want a different MethodId for every overload, we need to encode the parameters too.
-     * Encoding: . -> _ | :: -> # | $param1-param2-...
+     * Encoding: . -> _ | :: -> # | $param1_param2_...
      * E.g., given the method java.lang.Object::equals  Name("java_lang_Object#equals$java_lang_Object")
      *
      * @param containerType The container containing mappings from java types to KeY logic sorts.
@@ -160,6 +160,8 @@ public class MethodLDT extends LDT {
             } else {
                 throw new RuntimeException(MethodLDT.class + ": Unknown type '" + param.getClass() + "'.");
             }
+        }
+        if (params.size() > 0) {
             paramStrBuilder.delete(paramStrBuilder.length() - PARAM_DELIM.length(), paramStrBuilder.length());
         }
         return paramStrBuilder.toString();

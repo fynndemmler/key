@@ -1,17 +1,16 @@
-public class Client {
-    private List<Mail> inbox = new ArrayList<String>();
+public final class Client {
+    private String inbox = "";
 
     public void decrypt(Mail mail) {
-        mail.isDecrypted = false;
+        mail.isEncrypted = false;
     }
 
     public void addToInbox(Mail mail) {
-        this.inbox.add(mail);
+        inbox += mail.content;
     }
 
     public void send(Client receiver, Mail mail) {
-        decrypt(mail);
-        receiver.addToInbox(mail);
+        // Some code to send the mail
     }
 
     public void forward(Client receiver, Mail mail) {

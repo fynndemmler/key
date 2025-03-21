@@ -20,14 +20,14 @@ import java.util.ArrayList;
 /**
  * Converts a method call into a {@link MethodName} and instantiates {@code newMethodName} with it.
  */
-public class GetMethodNameCondition implements VariableCondition {
+public class GetMethodIdentifierCondition implements VariableCondition {
     private final SchemaVariable newMethodName;
     private final SchemaVariable objName;
     private final SchemaVariable methodName;
     private final SchemaVariable params;
 
-    public GetMethodNameCondition(SchemaVariable newMethodName, SchemaVariable objName, SchemaVariable methodName,
-                                  SchemaVariable params) {
+    public GetMethodIdentifierCondition(SchemaVariable newMethodName, SchemaVariable objName, SchemaVariable methodName,
+                                        SchemaVariable params) {
         this.newMethodName = newMethodName;
         this.objName = objName;
         this.methodName = methodName;

@@ -370,7 +370,7 @@ parallel_term: a=elementary_update_term (PARALLEL b=elementary_update_term)*;
 // Changed for eventSequences
 elementary_update_term: elementary_state_update_term | elementary_event_update_term;
 elementary_state_update_term: a=equivalence_term (ASSIGN b=equivalence_term)?;
-elementary_event_update_term: EVENT_UPDATE LPAREN evt=equivalence_term COMMA evtNr=equivalence_term RPAREN;
+elementary_event_update_term: EVENT_UPDATE LPAREN evt=equivalence_term RPAREN;
 
 equivalence_term: a=implication_term (EQV b+=implication_term)*;
 implication_term: a=disjunction_term (IMP b=implication_term)?;
@@ -712,7 +712,7 @@ varexpId: // weigl, 2021-03-12: This will be later just an arbitrary identifier.
   | GET_VARIANT
   | IS_LABELED
   | ISINSTRICTFP
-  | GET_METHOD_NAME
+  | GET_METHOD_ID
   | GET_OBJECT
   | GET_PARAMS
   | IS_EVENT_UPDATE

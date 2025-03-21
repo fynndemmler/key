@@ -20,11 +20,11 @@ public class DropEffectlessEventUpdatesCondition implements VariableCondition {
         this.result = result;
     }
 
-    private boolean containsEvent(Term term) {
+    private boolean containsMethodId(Term term) {
         SortCollector collector = new SortCollector();
         term.execPostOrder(collector);
         for (var op : collector.getSorts()) {
-            if (op.name().toString().equals("Event")) {
+            if (op.name().toString().equals("MethodId")) {
                 return true;
             }
         }
@@ -75,7 +75,7 @@ public class DropEffectlessEventUpdatesCondition implements VariableCondition {
         if (uInst == null || targetInst == null) {
             return matchCond;
         }
-        if (!containsEvent(uInst) || containsEvent(targetInst)) {
+        if (!containsMethodId(uInst) || containsMethodId(targetInst)) {
             return matchCond;
         }
         Term properResultInst = dropEffectlessEventUpdates(uInst, targetInst, services);

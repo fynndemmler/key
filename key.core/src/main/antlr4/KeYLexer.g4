@@ -171,7 +171,7 @@ ELSE : '\\else';
 
 // Event Sequences
 GET_OBJECT : '\\getObject';
-GET_METHOD_NAME : '\\getMethodName';
+GET_METHOD_ID : '\\getMethodIdentifier';
 GET_PARAMS      : '\\getParams';
 EQUAL_METHOD_CALLS : '\\equalMethodCalls';
 
@@ -231,7 +231,7 @@ PROOFSCRIPT : '\\proofScript';
 CONTRACTS : '\\contracts';
 INVARIANTS : '\\invariants';
 
-// Keywords for Event Sequences TODO: remove if not needed
+// Keywords for Event Sequences
 EVENT : '\\event';
 EVENT_SEQ : '\\eventSeq';
 EVENT_UPDATE : '\\eventUpdate';

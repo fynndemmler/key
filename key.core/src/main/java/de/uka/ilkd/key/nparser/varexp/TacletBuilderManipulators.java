@@ -298,7 +298,7 @@ public class TacletBuilderManipulators {
     public static final AbstractConditionBuilder EQUAL_METHOD_CALLS =
             new ConstructorBasedBuilder("equalMethodCalls", EqualMethodCalls.class, SV, SV, SV, SV);*/
     public static final AbstractConditionBuilder GET_METHOD_NAME =
-            new ConstructorBasedBuilder("getMethodName", GetMethodNameCondition.class, SV, SV, SV, SV);
+            new ConstructorBasedBuilder("getMethodIdentifier", GetMethodIdentifierCondition.class, SV, SV, SV, SV);
     public static final AbstractConditionBuilder GET_OBJECT =
             new ConstructorBasedBuilder("getObject", GetObjectCondition.class, SV, SV);
     public static final AbstractConditionBuilder GET_PARAMS =

@@ -29,7 +29,7 @@ import java.util.List;
  * constant encodings are needed for tracing events.
  */
 public class MethodLDT extends LDT {
-    public static final Name NAME = new Name("MethodName");
+    public static final Name NAME = new Name("MethodId");
 
     private static final String METHOD_DELIM = "#";
     private static final String PARAMS_DELIM = "$";
@@ -51,7 +51,7 @@ public class MethodLDT extends LDT {
 
     /**
      * Constructs a JFunction for a given MethodDeclaration methDecl through custom encoding.
-     * Since we want a different MethodName for every overload, we need to encode the parameters too.
+     * Since we want a different MethodId for every overload, we need to encode the parameters too.
      * Encoding: . -> _ | :: -> # | $param1-param2-...
      * E.g., given the method java.lang.Object::equals  Name("java_lang_Object#equals$java_lang_Object")
      *
@@ -68,10 +68,10 @@ public class MethodLDT extends LDT {
         }
         final String fullTypeName = containerType.getFullName();
         final String methodName = methDecl.getName();
-        final Name newMethodName;
-        newMethodName = constructMethodName(fullTypeName, methodName, constructParams(methDecl.getParameters()));
-        final JFunction method = new JFunction(newMethodName, targetSort(), true, false);
-        if (methodConstantExists(newMethodName)) {
+        final Name newMethodId;
+        newMethodId = constructMethodIdentifier(fullTypeName, methodName, constructParams(methDecl.getParameters()));
+        final JFunction method = new JFunction(newMethodId, targetSort(), true, false);
+        if (methodConstantExists(newMethodId)) {
             return false;
         }
         services.getNamespaces().functions().add(method);
@@ -89,7 +89,7 @@ public class MethodLDT extends LDT {
      * @return The JFunction that is requested.
      */
     public JFunction getMethodNameConstant(String fnType, MethodName mnInst, ImmutableArray<String> params) {
-        final var methodNameToFind = constructMethodName(fnType, mnInst.toString(),
+        final var methodNameToFind = constructMethodIdentifier(fnType, mnInst.toString(),
                 constructParams(params));
         final JFunction methodNameConstant;
         if ((methodNameConstant = getRegisteredMethodNameConstant(methodNameToFind)) == null) {
@@ -109,15 +109,15 @@ public class MethodLDT extends LDT {
     }
 
     /**
-     * Constructs the MethodName from the given parts.
+     * Constructs the MethodId from the given parts.
      * Format: {@code fullTypeName}{@value METHOD_DELIM}{@code methodName}{@value PARAMS_DELIM}{@code paramTypes}
      *
      * @param fullTypeName The type name of the reference.
      * @param methodName   The method name.
      * @param paramTypes   The parameter type list.
-     * @return The constructed MethodName.
+     * @return The constructed MethodId.
      */
-    private Name constructMethodName(String fullTypeName, String methodName, String paramTypes) {
+    private Name constructMethodIdentifier(String fullTypeName, String methodName, String paramTypes) {
         final StringBuffer signature = new StringBuffer();
         signature.append(fullTypeName.replaceAll("\\.", "_"))
                 .append(METHOD_DELIM)

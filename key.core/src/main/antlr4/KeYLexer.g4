@@ -169,12 +169,6 @@ IFEX   : '\\ifEx';
 THEN : '\\then';
 ELSE : '\\else';
 
-// Event Sequences
-GET_OBJECT : '\\getObject';
-GET_METHOD_ID : '\\getMethodIdentifier';
-GET_PARAMS      : '\\getParams';
-EQUAL_METHOD_CALLS : '\\equalMethodCalls';
-
 // inclusion and stuff, things that (usually) come at the beginning
 // of the file
 INCLUDE:'\\include';
@@ -235,6 +229,11 @@ INVARIANTS : '\\invariants';
 EVENT : '\\event';
 EVENT_SEQ : '\\eventSeq';
 EVENT_UPDATE : '\\eventUpdate';
+GET_OBJECT : '\\getObject';
+GET_METHOD_ID : '\\getMethodIdentifier';
+GET_METHOD_HEAP : '\\getMethodHeap';
+GET_PARAMS      : '\\getParams';
+EQUAL_METHOD_CALLS : '\\equalMethodCalls';
 IS_EVENT_UPDATE: '\\isEventUpdate';
 CONTAINS_EVENT: '\\containsEvent';
 CONTAINS_EVENT_UPDATE: '\\containsEventUpdate';

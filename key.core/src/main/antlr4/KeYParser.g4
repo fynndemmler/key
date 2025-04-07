@@ -713,6 +713,7 @@ varexpId: // weigl, 2021-03-12: This will be later just an arbitrary identifier.
   | IS_LABELED
   | ISINSTRICTFP
   | GET_METHOD_ID
+  | GET_METHOD_HEAP
   | GET_OBJECT
   | GET_PARAMS
   | IS_EVENT_UPDATE

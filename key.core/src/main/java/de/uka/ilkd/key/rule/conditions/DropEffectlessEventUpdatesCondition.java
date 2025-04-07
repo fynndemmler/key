@@ -63,7 +63,7 @@ public class DropEffectlessEventUpdatesCondition implements VariableCondition {
 
     private Term dropEffectlessEventUpdates(Term uInst, Term targetInst, Services services) {
         Term finalUpdate = dropEffectlessEventUpdatesRecursively(uInst, services);
-        return services.getTermBuilder().apply(finalUpdate, targetInst);
+        return finalUpdate == null ? null : services.getTermBuilder().apply(finalUpdate, targetInst);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class DropEffectlessEventUpdatesCondition implements VariableCondition {
         }
         Term properResultInst = dropEffectlessEventUpdates(uInst, targetInst, services);
         if (properResultInst == null) {
-            return null;
+            return matchCond;
         } else if (resultInst == null) {
             svInst = svInst.add(result, properResultInst, services);
             return matchCond.setInstantiations(svInst);

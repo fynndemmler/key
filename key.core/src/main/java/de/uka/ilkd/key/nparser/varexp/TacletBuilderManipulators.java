@@ -299,6 +299,8 @@ public class TacletBuilderManipulators {
             new ConstructorBasedBuilder("equalMethodCalls", EqualMethodCalls.class, SV, SV, SV, SV);*/
     public static final AbstractConditionBuilder GET_METHOD_NAME =
             new ConstructorBasedBuilder("getMethodIdentifier", GetMethodIdentifierCondition.class, SV, SV, SV, SV);
+    public static final AbstractConditionBuilder GET_METHOD_HEAP =
+            new ConstructorBasedBuilder("getMethodHeap", GetMethodHeapCondition.class, SV, SV);
     public static final AbstractConditionBuilder GET_OBJECT =
             new ConstructorBasedBuilder("getObject", GetObjectCondition.class, SV, SV);
     public static final AbstractConditionBuilder GET_PARAMS =
@@ -398,7 +400,7 @@ public class TacletBuilderManipulators {
         register(STORE_TERM_IN, STORE_STMT_IN, HAS_INVARIANT, GET_INVARIANT, GET_FREE_INVARIANT,
                 GET_VARIANT, IS_LABELED);
         // Event Sequences
-        register(GET_METHOD_NAME, GET_OBJECT, GET_PARAMS, IS_EVENT_UPDATE, CONTAINS_EVENT, DROP_EL_EVENT_UPDATES
+        register(GET_METHOD_NAME, GET_METHOD_HEAP, GET_OBJECT, GET_PARAMS, IS_EVENT_UPDATE, CONTAINS_EVENT, DROP_EL_EVENT_UPDATES
                 , CONTAINS_EVENT_UPDATE);
 
         loadWithServiceLoader();

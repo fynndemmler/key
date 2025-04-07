@@ -42,6 +42,7 @@ public final class HeapLDT extends LDT {
     public static final Name BASE_HEAP_NAME = new Name("heap");
     public static final Name SAVED_HEAP_NAME = new Name("savedHeap");
     public static final Name PERMISSION_HEAP_NAME = new Name("permissions");
+    public static final String MHEAP_PREFIX = new String("heapAt");
     public static final Name[] VALID_HEAP_NAMES =
             {BASE_HEAP_NAME, SAVED_HEAP_NAME, PERMISSION_HEAP_NAME};
 
@@ -79,6 +80,7 @@ public final class HeapLDT extends LDT {
 
     // heap pv
     private ImmutableList<LocationVariable> heaps;
+    private ImmutableList<LocationVariable> methodHeaps;
 
 
     // -------------------------------------------------------------------------
@@ -119,6 +121,7 @@ public final class HeapLDT extends LDT {
                 }
             }
         }
+        methodHeaps = ImmutableSLList.<LocationVariable>nil();
         wellFormed = addFunction(services, "wellFormed");
     }
 
@@ -141,7 +144,6 @@ public final class HeapLDT extends LDT {
             return fieldPVName.substring(0, index) + "::$" + fieldPVName.substring(index + 2);
         }
     }
-
 
     // -------------------------------------------------------------------------
     // public interface
@@ -346,6 +348,17 @@ public final class HeapLDT extends LDT {
         return heaps.tail().head();
     }
 
+    public ImmutableList<LocationVariable> getMethodHeaps() {
+        return methodHeaps;
+    }
+
+    public LocationVariable getMethodHeap(JFunction method) {
+        return methodHeaps.stream().filter(m -> m.name().toString().equals(MHEAP_PREFIX + method.name().toString())).findFirst().orElse(null);
+    }
+
+    public void clearMethodHeaps() {
+        this.methodHeaps = ImmutableSLList.<LocationVariable>nil();
+    }
 
     public ImmutableList<LocationVariable> getAllHeaps() {
         return heaps;
@@ -362,6 +375,16 @@ public final class HeapLDT extends LDT {
 
     public LocationVariable getPermissionHeap() {
         return heaps.size() > 2 ? heaps.tail().tail().head() : null;
+    }
+
+    /**
+     * Used to add one heap per method identifier. Every method identifier heap is used to record the entire state before the last time the corresponding method has been called. Necessary for event sequences.
+     * @param methodHeap The heap for a method identifier.
+     */
+    public void addMethodHeap(LocationVariable methodHeap) {
+        if (methodHeap != null && !methodHeaps.contains(methodHeap)) {
+            methodHeaps = methodHeaps.append(methodHeap);
+        }
     }
 
     /**
@@ -494,12 +517,9 @@ public final class HeapLDT extends LDT {
                 "Could not translate " + ProofSaver.printTerm(t, null) + " to program.");
     }
 
-
     @Override
     public Type getType(Term t) {
         assert false;
         return null;
     }
-
-
 }

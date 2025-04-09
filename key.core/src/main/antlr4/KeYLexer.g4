@@ -228,16 +228,16 @@ INVARIANTS : '\\invariants';
 // Keywords for Event Sequences
 EVENT : '\\event';
 EVENT_SEQ : '\\eventSeq';
-EVENT_UPDATE : '\\eventUpdate';
+MC_UPDATE : 'mcUpdate';
 GET_OBJECT : '\\getObject';
 GET_METHOD_ID : '\\getMethodIdentifier';
 GET_METHOD_HEAP : '\\getMethodHeap';
 GET_PARAMS      : '\\getParams';
 EQUAL_METHOD_CALLS : '\\equalMethodCalls';
-IS_EVENT_UPDATE: '\\isEventUpdate';
+IS_MC_UPDATE: '\\isMcUpdate';
 CONTAINS_EVENT: '\\containsEvent';
-CONTAINS_EVENT_UPDATE: '\\containsEventUpdate';
-DROP_EL_EVENT_UPDATES : '\\dropEffectlessEventUpdates';
+CONTAINS_MC_UPDATE: '\\containsMcUpdate';
+DROP_EL_MC_UPDATES : '\\dropEffectlessMcUpdates';
 
 // Taclet annotations (see TacletAnnotations.java for more details)
 LEMMA : '\\lemma';

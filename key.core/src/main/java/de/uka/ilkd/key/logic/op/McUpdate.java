@@ -5,10 +5,10 @@ import org.key_project.logic.Name;
 import org.key_project.logic.SyntaxElement;
 import org.key_project.logic.sort.Sort;
 
-public class EventUpdate extends AbstractSortedOperator {
-    public static final Operator instance = new EventUpdate(new Name("\\eventUpdate"));
+public class McUpdate extends AbstractSortedOperator {
+    public static final Operator instance = new McUpdate(new Name("mcUpdate"));
 
-    private EventUpdate(Name name) {
+    private McUpdate(Name name) {
         super(name, new Sort[]{JavaDLTheory.ANY}, JavaDLTheory.UPDATE, false);
     }
 

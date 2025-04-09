@@ -9,12 +9,12 @@ import de.uka.ilkd.key.rule.VariableCondition;
 import de.uka.ilkd.key.rule.inst.SVInstantiations;
 import org.key_project.logic.SyntaxElement;
 
-public class DropEffectlessEventUpdatesCondition implements VariableCondition {
+public class DropEffectlessMcUpdatesCondition implements VariableCondition {
     private UpdateSV u;
     private SchemaVariable target;
     private SchemaVariable result;
 
-    public DropEffectlessEventUpdatesCondition(UpdateSV u, SchemaVariable target, SchemaVariable result) {
+    public DropEffectlessMcUpdatesCondition(UpdateSV u, SchemaVariable target, SchemaVariable result) {
         this.u = u;
         this.target = target;
         this.result = result;
@@ -31,7 +31,7 @@ public class DropEffectlessEventUpdatesCondition implements VariableCondition {
         return false;
     }
 
-    private Term dropEffectlessEventUpdatesRecursively(Term update, Services services) {
+    private Term dropEffectlessMcUpdatesRecursively(Term update, Services services) {
         if (update.op() instanceof ElementaryUpdate eu) {
             return update;//services.getTermBuilder().elementary(eu.lhs(), update.sub(0));
         } else if (update.op() == UpdateJunctor.PARALLEL_UPDATE) {
@@ -39,8 +39,8 @@ public class DropEffectlessEventUpdatesCondition implements VariableCondition {
             Term sub1 = update.sub(1);
             // first descend to the second sub-update to keep relevantVars in
             // good order
-            Term newSub1 = dropEffectlessEventUpdatesRecursively(sub1, services);
-            Term newSub0 = dropEffectlessEventUpdatesRecursively(sub0, services);
+            Term newSub1 = dropEffectlessMcUpdatesRecursively(sub1, services);
+            Term newSub0 = dropEffectlessMcUpdatesRecursively(sub0, services);
             if (newSub0 == null && newSub1 == null) {
                 return null;
             } else {
@@ -51,9 +51,9 @@ public class DropEffectlessEventUpdatesCondition implements VariableCondition {
         } else if (update.op() == UpdateApplication.UPDATE_APPLICATION) {
             Term sub0 = update.sub(0);
             Term sub1 = update.sub(1);
-            Term newSub1 = dropEffectlessEventUpdatesRecursively(sub1, services);
+            Term newSub1 = dropEffectlessMcUpdatesRecursively(sub1, services);
             return newSub1 == null ? null : services.getTermBuilder().apply(sub0, newSub1, null);
-        } else if (update.op() == EventUpdate.instance) {
+        } else if (update.op() == McUpdate.instance) {
             return services.getTermBuilder().skip();
         }
         else {
@@ -61,8 +61,8 @@ public class DropEffectlessEventUpdatesCondition implements VariableCondition {
         }
     }
 
-    private Term dropEffectlessEventUpdates(Term uInst, Term targetInst, Services services) {
-        Term finalUpdate = dropEffectlessEventUpdatesRecursively(uInst, services);
+    private Term dropEffectlessMcUpdates(Term uInst, Term targetInst, Services services) {
+        Term finalUpdate = dropEffectlessMcUpdatesRecursively(uInst, services);
         return finalUpdate == null ? null : services.getTermBuilder().apply(finalUpdate, targetInst);
     }
 
@@ -78,7 +78,7 @@ public class DropEffectlessEventUpdatesCondition implements VariableCondition {
         if (!containsMethodId(uInst) || containsMethodId(targetInst)) {
             return matchCond;
         }
-        Term properResultInst = dropEffectlessEventUpdates(uInst, targetInst, services);
+        Term properResultInst = dropEffectlessMcUpdates(uInst, targetInst, services);
         if (properResultInst == null) {
             return matchCond;
         } else if (resultInst == null) {

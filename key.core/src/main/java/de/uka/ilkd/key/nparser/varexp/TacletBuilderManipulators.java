@@ -305,14 +305,14 @@ public class TacletBuilderManipulators {
             new ConstructorBasedBuilder("getObject", GetObjectCondition.class, SV, SV);
     public static final AbstractConditionBuilder GET_PARAMS =
             new ConstructorBasedBuilder("getParams", GetParamsCondition.class, SV, SV);
-    public static final AbstractConditionBuilder IS_EVENT_UPDATE =
-            new ConstructorBasedBuilder("isEventUpdate", IsEventUpdateCondition.class, SV);
+    public static final AbstractConditionBuilder IS_MC_UPDATE =
+            new ConstructorBasedBuilder("isMcUpdate", IsMcUpdateCondition.class, SV);
     public static final AbstractConditionBuilder CONTAINS_EVENT =
             new ConstructorBasedBuilder("containsEvent", ContainsEventCondition.class, SV);
-    public static final AbstractConditionBuilder CONTAINS_EVENT_UPDATE =
-            new ConstructorBasedBuilder("containsEventUpdate", ContainsEventUpdateCondition.class, USV);
-    public static final AbstractConditionBuilder DROP_EL_EVENT_UPDATES =
-            new ConstructorBasedBuilder("dropEffectlessEventUpdates", DropEffectlessEventUpdatesCondition.class, USV, SV, SV);
+    public static final AbstractConditionBuilder CONTAINS_MC_UPDATE =
+            new ConstructorBasedBuilder("containsMcUpdate", ContainsMcUpdateCondition.class, USV);
+    public static final AbstractConditionBuilder DROP_EL_MC_UPDATES =
+            new ConstructorBasedBuilder("dropEffectlessMcUpdates", DropEffectlessMcUpdatesCondition.class, USV, SV, SV);
 
     static class JavaTypeToSortConditionBuilder extends AbstractConditionBuilder {
         private final boolean elmen;
@@ -400,8 +400,8 @@ public class TacletBuilderManipulators {
         register(STORE_TERM_IN, STORE_STMT_IN, HAS_INVARIANT, GET_INVARIANT, GET_FREE_INVARIANT,
                 GET_VARIANT, IS_LABELED);
         // Event Sequences
-        register(GET_METHOD_NAME, GET_METHOD_HEAP, GET_OBJECT, GET_PARAMS, IS_EVENT_UPDATE, CONTAINS_EVENT, DROP_EL_EVENT_UPDATES
-                , CONTAINS_EVENT_UPDATE);
+        register(GET_METHOD_NAME, GET_METHOD_HEAP, GET_OBJECT, GET_PARAMS, IS_MC_UPDATE, CONTAINS_EVENT, DROP_EL_MC_UPDATES
+                , CONTAINS_MC_UPDATE);
 
         loadWithServiceLoader();
     }

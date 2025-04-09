@@ -368,9 +368,9 @@ term: parallel_term; // weigl: should normally be equivalence_term
 //labeled_term: a=parallel_term (LGUILLEMETS labels=label RGUILLEMETS)?;
 parallel_term: a=elementary_update_term (PARALLEL b=elementary_update_term)*;
 // Changed for eventSequences
-elementary_update_term: elementary_state_update_term | elementary_event_update_term;
+elementary_update_term: elementary_state_update_term | elementary_mc_update_term;
 elementary_state_update_term: a=equivalence_term (ASSIGN b=equivalence_term)?;
-elementary_event_update_term: EVENT_UPDATE LPAREN evt=equivalence_term RPAREN;
+elementary_mc_update_term: MC_UPDATE LPAREN mc=equivalence_term RPAREN;
 
 equivalence_term: a=implication_term (EQV b+=implication_term)*;
 implication_term: a=disjunction_term (IMP b=implication_term)?;
@@ -387,7 +387,7 @@ comparison_term: a=weak_arith_term ((LESS|LESSEQUAL|GREATER|GREATEREQUAL|UTF_PRE
 weak_arith_term: a=strong_arith_term_1 (op+=(PLUS|MINUS|UTF_UNION|UTF_INTERSECT|UTF_SETMINUS) b+=strong_arith_term_1)*;
 strong_arith_term_1: a=strong_arith_term_2 (STAR b+=strong_arith_term_2)*;
 strong_arith_term_2: a=atom_prefix (op+=(PERCENT|SLASH) b+=atom_prefix)*;
-update_term: (LBRACE u=parallel_term RBRACE) (atom_prefix | unary_formula | elementary_event_update_term);
+update_term: (LBRACE u=parallel_term RBRACE) (atom_prefix | unary_formula | elementary_mc_update_term);
 
 substitution_term:
  LBRACE SUBST  bv=one_bound_variable SEMI
@@ -716,10 +716,10 @@ varexpId: // weigl, 2021-03-12: This will be later just an arbitrary identifier.
   | GET_METHOD_HEAP
   | GET_OBJECT
   | GET_PARAMS
-  | IS_EVENT_UPDATE
+  | IS_MC_UPDATE
   | CONTAINS_EVENT
-  | CONTAINS_EVENT_UPDATE
-  | DROP_EL_EVENT_UPDATES
+  | CONTAINS_MC_UPDATE
+  | DROP_EL_MC_UPDATES
 ;
 
 varexp_argument

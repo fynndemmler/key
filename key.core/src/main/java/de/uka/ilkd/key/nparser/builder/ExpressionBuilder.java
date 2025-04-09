@@ -196,9 +196,9 @@ public class ExpressionBuilder extends DefaultBuilder {
     }
 
     @Override
-    public Term visitElementary_event_update_term(KeYParser.Elementary_event_update_termContext ctx) {
-        Term evt = accept(ctx.evt);
-        return updateOrigin(getServices().getTermBuilder().eventUpdate(evt), ctx, services);
+    public Term visitElementary_mc_update_term(KeYParser.Elementary_mc_update_termContext ctx) {
+        Term mc = accept(ctx.mc);
+        return updateOrigin(getServices().getTermBuilder().mcUpdate(mc), ctx, services);
     }
 
     @Override

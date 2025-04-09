@@ -2350,7 +2350,7 @@ public class TermBuilder {
         return services.getOriginFactory();
     }
 
-    public Term eventUpdate(Term evt) {
-        return tf.createTerm(EventUpdate.instance, evt);
+    public Term mcUpdate(Term mc) {
+        return tf.createTerm(McUpdate.instance, mc);
     }
 }

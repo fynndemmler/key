@@ -173,7 +173,7 @@ public class MergeRuleUtils {
             }
             return result;
 
-        } else if (u.op() instanceof EventUpdate) {
+        } else if (u.op() instanceof McUpdate) {
             return DefaultImmutableSet.nil();
         } else {
 
@@ -197,7 +197,7 @@ public class MergeRuleUtils {
             for (Term sub : u.subs()) {
                 result.addAll(getElementaryUpdates(sub));
             }
-        } else if (u.op() instanceof EventUpdate) {
+        } else if (u.op() instanceof McUpdate) {
             // Not needed, do nothing.
         } else {
             throw new IllegalArgumentException("Expected an update!");
@@ -561,7 +561,7 @@ public class MergeRuleUtils {
     public static boolean isUpdateNormalForm(Term u) {
         if (u.op() instanceof ElementaryUpdate) {
             return true;
-        } else if (u.op() instanceof EventUpdate) {
+        } else if (u.op() instanceof McUpdate) {
             return true;
             //return false;
         } else if (u.op() instanceof UpdateJunctor) {

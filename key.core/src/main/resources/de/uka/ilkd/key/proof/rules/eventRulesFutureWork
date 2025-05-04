@@ -1,0 +1,68 @@
+\rules {
+  applyMcUpdateOnSkip {
+    \schemaVar \update eu;
+    \find({eu}skip)
+    \varcond(\isMcUpdate(eu))
+    \replacewith(skip)
+    \heuristics(concrete) /* must be high prio than simplifyOnTerm, else we loop on simplifyOnTerm TODO fix related
+     varcon.*/
+  };
+
+  applyUpdateOnMcUpdate {
+    \schemaVar \update u;
+    \schemaVar \term MethodId mId;
+    \find({u}(mcUpdate(mId)))
+    \varcond(\not \containsMcUpdate(u)) // TODO: Remove if it should be the same for event updates
+    \replacewith(mcUpdate({u}mId))
+    \heuristics(update_apply_on_update)
+  };
+
+    simplifyParallelMcUpdateOnUpdate {
+        \schemaVar \update u, eu1, eu2;
+        \find({eu1 || eu2}u)
+        \varcond(\isMcUpdate(eu1), \containsMcUpdate(eu2))
+        \replacewith({eu2}u)
+        \heuristics(update_elim)
+    };
+
+    applyChainMcUpdateOnEventSeq {
+        \schemaVar \term Seq events;
+        \schemaVar \update eventU, u;
+        \find({\mcUpdate(mIdInUpdate, cInUpdate)}eventSeq(events))
+        \varcond(\containsMcUpdate(eventU))
+        \replacewith({eventU}(boolean::seqGet(events, 0) = seqEmpty | ((seqLen(events) >= 1 -> (boolean::seqGet(events, 0) = TRUE)) & (seqLen(events) > 1 -> eventSeq(seqSub(events, 1, seqLen(events)))))))
+        \heuristics(update_apply)
+    };
+
+    applyParallelChainMcUpdateOnEventSeq {
+        \schemaVar \term Seq events;
+        \schemaVar \update eventU;
+        \schemaVar \update u1, u2;
+        \find({u1 || eventU}eventSeq(events))
+        \varcond(\containsMcUpdate(eventU))
+        \replacewith({eventU}eventSeq({u1}events))
+        \heuristics(update_apply)
+    };
+
+    applyParallelChainMcUpdateOnEvent {
+        \schemaVar \term MethodId mid;
+        \schemaVar \term boolean c;
+        \schemaVar \update eventU;
+        \schemaVar \update u1, u2;
+        \find({u1 || eventU}event(mid, c))
+        \varcond(\containsMcUpdate(eventU))
+        \replacewith({eventU}event({u1}mid, {u1}c))
+        \heuristics(update_apply)
+    };
+
+   applyChainMcUpdateOnEventCon {
+        \schemaVar \term MethodId mIdInUpdate;
+        \schemaVar \term MethodId mId;
+        \schemaVar \term boolean cond;
+        \schemaVar \update eu, u;
+        \find({{u}eu}event(mId, cond))
+        \varcond(\isMcUpdate(eu))
+        \replacewith({u}({eu}(event(mId, cond))) | event({{u}eu}mId, {{u}eu}cond))
+        \heuristics(update_apply)
+    };
+}

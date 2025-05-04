@@ -1,6 +1,8 @@
 public final class Client {
     private String inbox = "";
 
+    public void encrypt(Mail mail) { mail.isEncrypted = true; }
+
     public void decrypt(Mail mail) {
         mail.isEncrypted = false;
     }

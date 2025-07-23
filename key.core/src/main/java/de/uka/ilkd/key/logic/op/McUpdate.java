@@ -9,7 +9,7 @@ public class McUpdate extends AbstractSortedOperator {
     public static final Operator instance = new McUpdate(new Name("mcUpdate"));
 
     private McUpdate(Name name) {
-        super(name, new Sort[]{JavaDLTheory.ANY}, JavaDLTheory.UPDATE, false);
+        super(name, new Sort[]{JavaDLTheory.ANY, JavaDLTheory.ANY}, JavaDLTheory.UPDATE, false);
     }
 
     @Override

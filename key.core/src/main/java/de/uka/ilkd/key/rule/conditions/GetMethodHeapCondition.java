@@ -20,7 +20,7 @@ import org.key_project.util.collection.ImmutableArray;
 import java.util.ArrayList;
 
 /**
- * Converts a method call into a {@link MethodName} and instantiates {@code newMethodName} with it.
+ * Gets the heap variable for a given method identifier.
  */
 public class GetMethodHeapCondition implements VariableCondition {
     private final SchemaVariable newHeap;
@@ -47,14 +47,5 @@ public class GetMethodHeapCondition implements VariableCondition {
         }
         var ret = svInst.add(this.newHeap, heapTerm, services);
         return mc.setInstantiations(ret);
-    }
-
-    private static ImmutableArray<Expression> toExpArray(
-            ImmutableArray<? extends ProgramElement> a) {
-        Expression[] result = new Expression[a.size()];
-        for (int i = 0; i < a.size(); i++) {
-            result[i] = (Expression) a.get(i);
-        }
-        return new ImmutableArray<>(result);
     }
 }

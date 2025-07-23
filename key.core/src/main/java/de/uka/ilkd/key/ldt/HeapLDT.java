@@ -378,7 +378,9 @@ public final class HeapLDT extends LDT {
     }
 
     /**
-     * Used to add one heap per method identifier. Every method identifier heap is used to record the entire state before the last time the corresponding method has been called. Necessary for event sequences.
+     * Used to add one heap per method identifier. Every method identifier heap is used to record
+     * the entire state before the last time the corresponding method has been called. Necessary
+     * for event sequences.
      * @param methodHeap The heap for a method identifier.
      */
     public void addMethodHeap(LocationVariable methodHeap) {

@@ -291,6 +291,7 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
          * that the cost is higher for event update shifting than update applications, because any update application
          * must be handled first, or otherwise they might contain another event update that would be shifted.*/
         /*bindRuleSet(d, "update_eu_shift", -4400);*/
+        bindRuleSet(d, "update_late", -4000);
 
         setUpStringNormalisation(d);
 

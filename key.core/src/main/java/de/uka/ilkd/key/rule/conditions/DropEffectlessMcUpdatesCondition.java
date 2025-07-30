@@ -20,11 +20,12 @@ public class DropEffectlessMcUpdatesCondition implements VariableCondition {
         this.result = result;
     }
 
-    private boolean containsMethodId(Term term) {
+    private boolean containsRelevantTerm(Term term) {
         SortCollector collector = new SortCollector();
         term.execPostOrder(collector);
         for (var op : collector.getSorts()) {
-            if (op.name().toString().equals("MethodId")) {
+            System.out.println(op.name());
+            if (op.name().toString().equals("MethodId") || op.name().toString().equals("Field")) {
                 return true;
             }
         }
@@ -75,7 +76,7 @@ public class DropEffectlessMcUpdatesCondition implements VariableCondition {
         if (uInst == null || targetInst == null) {
             return matchCond;
         }
-        if (!containsMethodId(uInst) || containsMethodId(targetInst)) {
+        if (!containsRelevantTerm(uInst) || containsRelevantTerm(targetInst)) {
             return matchCond;
         }
         Term properResultInst = dropEffectlessMcUpdates(uInst, targetInst, services);

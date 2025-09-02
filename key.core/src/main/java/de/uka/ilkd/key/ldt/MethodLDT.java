@@ -31,8 +31,8 @@ import static de.uka.ilkd.key.ldt.HeapLDT.MHEAP_PREFIX;
 public class MethodLDT extends LDT {
     public static final Name NAME = new Name("MethodId");
 
-    private static final String METHOD_DELIM = "#";
-    private static final String PARAMS_DELIM = "$";
+    private static final String METHOD_DELIM = "_";
+    private static final String PARAMS_DELIM = "_";
     private static final String PARAM_DELIM = "_";
     private static Map<JFunction, LocationVariable> methodNameConstants = new HashMap<>();
 
@@ -71,6 +71,7 @@ public class MethodLDT extends LDT {
         final String methodName = methDecl.getName();
         final Name newMethodId;
         newMethodId = constructMethodIdentifier(fullTypeName, methodName, constructParams(methDecl.getParameters()));
+        System.out.println(newMethodId);
         final JFunction method = new JFunction(newMethodId, targetSort(), true, false);
         if (methodConstantExists(newMethodId)) {
             return false;

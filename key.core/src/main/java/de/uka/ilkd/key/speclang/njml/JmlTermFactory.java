@@ -503,6 +503,14 @@ public final class JmlTermFactory {
         return translateToJDLTerm(name, list);
     }
 
+    /*
+    public SLExpression event_sequence(ImmutableList<SLExpression> list) {
+        for (SLExpression e : list) {
+        }
+
+        return translateToJDLTerm(name, list);
+    }*/
+
     public SLExpression commentary(String desc, LocationVariable selfVar,
             LocationVariable resultVar,
             ImmutableList<LocationVariable> paramVars, Term heapAtPre) {

@@ -2518,6 +2518,12 @@ class Translator extends JmlParserBaseVisitor<Object> {
         }
         return heaps;
     }
+
+    /*
+    @Override
+    public SLExpression visitEventseq(JmlParser.EventseqContext ctx) {
+       return new SLExpression()
+    }*/
     // endregion
 
     // region exception helper

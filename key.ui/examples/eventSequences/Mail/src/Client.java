@@ -19,8 +19,8 @@ public  class Client {
 	// MUHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 	// MUHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 	// MUHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
-	//@ ghost boolean condAtSetMailIsEncrypted;
-	//@ ghost boolean condAtForward;
+	//@ public ghost boolean cond1;
+	//@ public ghost boolean cond2;
 
 	
 	
@@ -356,18 +356,17 @@ public  class Client {
 	  @ ensures msg.isDelivered();
 	  @ ensures (client.forwardReceiver != null && client.forwardReceiver.name != null) ==> (msg.to == client.forwardReceiver && msg.from == client);
 	  @ ensures (client.privateKey != 0 && msg.isEncrypted && isKeyPairValid(msg.encryptionKey, client.privateKey)) ==> (!msg.isEncrypted && msg.encryptionKey == 0);
-	  @ ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(Email#setEmailIsEncrypted, condAtSetMailIsEncrypted)),\then(TRUE)\else(FALSE)), seqSingleton(\if(event(Client#forward$Client_Email, condAtForward))\then(TRUE)\else(FALSE))))*)
+	  @ ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(EmailSystem_Email_setEmailIsEncrypted_boolean, cond1))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(EmailSystem_Client_forward_EmailSystem_Client_EmailSystem_Email, cond2))\then(TRUE)\else(FALSE))))*);
 	  @ assignable msg.isEncrypted, msg.encryptionKey, msg.isDelivered, msg.to, msg.from;
 	  @ diverges true;
 	  @*/
 	private void incoming_Decrypt_Forward(Client client, Email msg) {
 		// decrypt
-		//@ set condAtSetMailIsEncrypted = msg.isEncrypted;
-		//@ set condAtForward = !msg.isEncrypted;
 		int privkey = client.getPrivateKey();
 		if (privkey != 0) {
 			if (msg.isEncrypted()
 					&& isKeyPairValid(msg.getEmailEncryptionKey(), privkey)) {
+				//@ set cond1 = msg.isEncrypted;
 				msg.setEmailIsEncrypted(false);
 				msg.setEmailEncryptionKey(0);
 			}
@@ -378,6 +377,7 @@ public  class Client {
 		Client receiver = client.getForwardReceiver();
 		if (receiver != null && receiver.getName() != null) {
 			msg.setEmailTo(receiver.getName());
+			//@ set cond2 = !msg.isEncrypted;
 			forward(client, msg);
 			incoming_Decrypt_Forward(receiver, msg);
 		}

@@ -13,6 +13,15 @@ public  class Client {
 	private Email[] mailbox = new Email[0];
 	//protected ArrayList<AddressBookEntry> addressbook = new ArrayList<AddressBookEntry>();
 	protected /*@spec_public@*/ static Client forwardReceiver;
+
+
+	// MUHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+	// MUHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+	// MUHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+	// MUHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+	//@ ghost boolean condAtSetMailIsEncrypted;
+	//@ ghost boolean condAtForward;
+
 	
 	
 	/*@
@@ -347,13 +356,14 @@ public  class Client {
 	  @ ensures msg.isDelivered();
 	  @ ensures (client.forwardReceiver != null && client.forwardReceiver.name != null) ==> (msg.to == client.forwardReceiver && msg.from == client);
 	  @ ensures (client.privateKey != 0 && msg.isEncrypted && isKeyPairValid(msg.encryptionKey, client.privateKey)) ==> (!msg.isEncrypted && msg.encryptionKey == 0);
-	  @ ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(Email#setEmailIsEncrypted, msg.isEncrypted)),\then(TRUE)\else(FALSE)), seqSingleton(\if(event(Client#forward$Client_Email, !msg.isEncrypted))\then(TRUE)\else(FALSE))))*)
+	  @ ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(Email#setEmailIsEncrypted, condAtSetMailIsEncrypted)),\then(TRUE)\else(FALSE)), seqSingleton(\if(event(Client#forward$Client_Email, condAtForward))\then(TRUE)\else(FALSE))))*)
 	  @ assignable msg.isEncrypted, msg.encryptionKey, msg.isDelivered, msg.to, msg.from;
 	  @ diverges true;
 	  @*/
 	private void incoming_Decrypt_Forward(Client client, Email msg) {
 		// decrypt
-
+		//@ set condAtSetMailIsEncrypted = msg.isEncrypted;
+		//@ set condAtForward = !msg.isEncrypted;
 		int privkey = client.getPrivateKey();
 		if (privkey != 0) {
 			if (msg.isEncrypted()

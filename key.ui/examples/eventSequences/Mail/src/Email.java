@@ -14,9 +14,7 @@ public  class Email {
 	private /*@spec_public@*/ boolean isSignatureVerified;
 	
 	private /*@spec_public@*/ boolean isDelivered;
-	
-	
-	
+
 	/*@
 	@ normal_behavior
 	@ requires true;

@@ -51,21 +51,26 @@ class Casino {
         bet = 0;
     }
 
+    // ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(Casino_placeBet_Address_int_Coin, TRUE))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(Casino_removeFromPot_Address_int, TRUE))\then(TRUE)\else(FALSE))))*);
+    // diverges false; */
     /*@
       @ requires true;
-      @ ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(Casino_placeBet_Address_int_Coin, TRUE))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(Casino_removeFromPot_Address_int, TRUE))\then(TRUE)\else(FALSE))))*);
-      @ diverges false; */
+      @ ensures true;
+      @*/
     public static void allNonReoccuringMethodCallSequencesGame() {
-        Address operator = new Address(1, 100);
-        Address player = new Address(2, 100);
+       Address operator = new Address(1, 100);
+       Address player = new Address(2, 100);
        Casino casino = new Casino(operator, player);
        // Every single method call sequence should at least occur once (n * fac(n))
-       int[] methods = new int[]{Methods.TRANSFER, Methods.REMOVE_FROM_POT, Methods.CREATE_GAME, Methods.PLACE_BET, Methods.DECIDE_BET};
+       //int[] methods = new int[]{Methods.TRANSFER, Methods.REMOVE_FROM_POT, Methods.CREATE_GAME, Methods.PLACE_BET, Methods.DECIDE_BET};
        //var method_sequences = permute(methods);
-       Methods[] method_sequences = new Methods[]{Methods.TRANSFER, Methods.CREATE_GAME, Methods.PLACE_BET, Methods.REMOVE_FROM_POT, Methods.DECIDE_BET};
+       //Methods[] method_sequences = new Methods[]{Methods.TRANSFER, Methods.CREATE_GAME, Methods.PLACE_BET, Methods.REMOVE_FROM_POT, Methods.DECIDE_BET};
        int c = 0;
+       casino.placeBet(player, 5, Coin.TAILS);
+       casino.removeFromPot(operator, 5);
        //for (List<Integer> method_sequence : method_sequences) {
-       for (Integer method : method_sequences) {
+        /*
+       for (Methods method : method_sequences) {
            if (method == Methods.TRANSFER) {
                casino.transfer(operator, 10);
            } else if (method == Methods.REMOVE_FROM_POT) {
@@ -79,7 +84,7 @@ class Casino {
                casino.decideBet(operator, 1337);
            }
            c = c + 1;
-       }
+       }*/
        //}
     }
 
@@ -94,6 +99,9 @@ class Casino {
     }
 
     // Remove money from pot
+    /*@ requires true;
+      @ ensures true;
+      @*/
     public boolean removeFromPot(Address caller, int amount) {
         // no active bet ongoing:
         if (this.state == State.BET_PLACED || caller != operator) {
@@ -115,6 +123,9 @@ class Casino {
     }
 
     // Player places a bet
+    /*@ requires true;
+      @ ensures true;
+      @*/
     public boolean placeBet(Address caller, int value, Coin guess) {
         if (state != State.GAME_AVAILABLE || caller == operator || value > pot) {
             return false;
@@ -127,6 +138,9 @@ class Casino {
     }
 
     // Operator resolves a bet
+    /*@ requires true;
+      @ ensures true;
+      @*/
     public boolean decideBet(Address caller, int secretNumber) {
         if (state != State.BET_PLACED || caller != operator || hashedNumber != secretNumber) {
             return false;

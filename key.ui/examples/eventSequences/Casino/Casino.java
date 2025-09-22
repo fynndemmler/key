@@ -51,10 +51,10 @@ class Casino {
         bet = 0;
     }
 
-    /*
-       requires operator != null & player != null;
-       ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(placeBet, true))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(removeFromPot, true))\then(TRUE)\else(FALSE))))*);
-      diverges false; */
+    /*@
+      @ requires true;
+      @ ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(Casino_placeBet_Address_int_Coin, TRUE))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(Casino_removeFromPot_Address_int, TRUE))\then(TRUE)\else(FALSE))))*);
+      @ diverges false; */
     public static void allNonReoccuringMethodCallSequencesGame() {
         Address operator = new Address(1, 100);
         Address player = new Address(2, 100);

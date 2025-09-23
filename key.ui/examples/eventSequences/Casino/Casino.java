@@ -25,6 +25,10 @@ class Address {
     int id;
     int balance;
 
+    /*@ normal_behavior
+      @ requires id > 0 & balance > 0;
+      @ ensures this.id == id & this.balance == balance;
+     */
     public Address(int id, int balance) {
         this.id = id;
         this.balance = balance;
@@ -43,31 +47,37 @@ class Casino {
     public int bet;
     private State state;
 
-    public Casino(Address operator, Address player) {
+    //@ invariant operator != null & player != null & guess != null & state != null & state.BET_PLACED != null & state.GAME_AVAILABLE != null & state.IDLE != null & Coin.HEADS != null & Coin.TAILS != null;
+
+    /*@ normal_behavior
+      @ requires operator != null & player != null;
+      @ ensures this.operator == operator & this.player == player & this.guess == Coin.HEADS & this.state == State.IDLE & this.pot == 0 & this.bet == 0 & this.hashedNumber == -1;
+      @*/
+    public void setupNewGame(Address operator, Address player) {
         this.operator = operator;
         this.player = player;
+        this.guess = Coin.HEADS;
         state = State.IDLE;
         pot = 0;
         bet = 0;
+        hashedNumber = -1;
     }
 
     // ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(Casino_placeBet_Address_int_Coin, TRUE))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(Casino_removeFromPot_Address_int, TRUE))\then(TRUE)\else(FALSE))))*);
     // diverges false; */
-    /*@
+    /*@ normal_behavior
       @ requires true;
       @ ensures true;
       @*/
-    public static void allNonReoccuringMethodCallSequencesGame() {
-       Address operator = new Address(1, 100);
-       Address player = new Address(2, 100);
-       Casino casino = new Casino(operator, player);
+    public void allNonReoccuringMethodCallSequencesGame(Address operator, Address player) {
+       setupNewGame(operator, player);
        // Every single method call sequence should at least occur once (n * fac(n))
        //int[] methods = new int[]{Methods.TRANSFER, Methods.REMOVE_FROM_POT, Methods.CREATE_GAME, Methods.PLACE_BET, Methods.DECIDE_BET};
        //var method_sequences = permute(methods);
        //Methods[] method_sequences = new Methods[]{Methods.TRANSFER, Methods.CREATE_GAME, Methods.PLACE_BET, Methods.REMOVE_FROM_POT, Methods.DECIDE_BET};
        int c = 0;
-       casino.placeBet(player, 5, Coin.TAILS);
-       casino.removeFromPot(operator, 5);
+       placeBet(player, 5, Coin.TAILS);
+       //removeFromPot(operator, 5);
        //for (List<Integer> method_sequence : method_sequences) {
         /*
        for (Methods method : method_sequences) {
@@ -99,7 +109,8 @@ class Casino {
     }
 
     // Remove money from pot
-    /*@ requires true;
+    /*@ normal_behavior
+      @ requires true;
       @ ensures true;
       @*/
     public boolean removeFromPot(Address caller, int amount) {
@@ -123,23 +134,26 @@ class Casino {
     }
 
     // Player places a bet
-    /*@ requires true;
+    /*@ normal_behavior
+      @ requires true;
       @ ensures true;
-      @*/
-    public boolean placeBet(Address caller, int value, Coin guess) {
-        if (state != State.GAME_AVAILABLE || caller == operator || value > pot) {
+     */
+    public boolean placeBet(Address caller, int value, Coin callerGuess) {
+        if (this.state != State.GAME_AVAILABLE || caller == this.operator || value > this.pot) {
             return false;
         }
         state = State.BET_PLACED;
         player = caller;
         bet = value;
-        this.guess = guess;
+        this.guess = callerGuess;
         return true;
     }
 
     // Operator resolves a bet
-    /*@ requires true;
-      @ ensures true;
+    /*@ normal_behavior
+      @ requires caller != null & secretNumber > 0;
+      @ ensures \result == false ==> state != State.BET_PLACED || caller != operator || hashedNumber != secretNumber;
+      @ ensures \result == true ==> state == State.IDLE;
       @*/
     public boolean decideBet(Address caller, int secretNumber) {
         if (state != State.BET_PLACED || caller != operator || hashedNumber != secretNumber) {
@@ -148,7 +162,7 @@ class Casino {
         Coin secret = (secretNumber % 2 == 0) ? Coin.HEADS : Coin.TAILS;
 
         if (secret == guess) {
-            // player wins, gets back twicer her bet
+            // player wins, gets back twice her bet
             pot = pot - bet;
             transfer(player, 2*bet);
             bet = 0;

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: GPL-2.0-only */
 package de.uka.ilkd.key.rule;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,14 +25,7 @@ import de.uka.ilkd.key.java.abstraction.KeYJavaType;
 import de.uka.ilkd.key.java.declaration.ClassDeclaration;
 import de.uka.ilkd.key.java.expression.operator.CopyAssignment;
 import de.uka.ilkd.key.java.expression.operator.New;
-import de.uka.ilkd.key.java.reference.ExecutionContext;
-import de.uka.ilkd.key.java.reference.FieldReference;
-import de.uka.ilkd.key.java.reference.MethodOrConstructorReference;
-import de.uka.ilkd.key.java.reference.MethodReference;
-import de.uka.ilkd.key.java.reference.ReferencePrefix;
-import de.uka.ilkd.key.java.reference.SuperReference;
-import de.uka.ilkd.key.java.reference.ThisReference;
-import de.uka.ilkd.key.java.reference.TypeReference;
+import de.uka.ilkd.key.java.reference.*;
 import de.uka.ilkd.key.java.statement.Throw;
 import de.uka.ilkd.key.java.visitor.ProgramContextAdder;
 import de.uka.ilkd.key.ldt.HeapLDT;
@@ -653,6 +647,7 @@ public final class UseOperationContractRule implements BuiltInRule {
         // prepare common stuff for the three branches
         Term anonAssumption = null;
         Term anonUpdate = null;
+        Term anonUpdateWithMcu = null;
         Term wellFormedAnon = null;
         Term atPreUpdates = null;
         Term reachableState = null;
@@ -693,6 +688,9 @@ public final class UseOperationContractRule implements BuiltInRule {
             } else {
                 reachableState = tb.and(reachableState, tb.wellFormed(heap));
             }
+        }
+        if (anonUpdate != null) {
+            anonUpdateWithMcu = tb.parallel(anonUpdate, generateMcu(services, inst, contractParams));
         }
 
         final Term excNull = tb.equals(tb.var(excVar), tb.NULL());
@@ -751,6 +749,7 @@ public final class UseOperationContractRule implements BuiltInRule {
             preGoal, null, null);
 
         // create "Post" branch
+
         final StatementBlock resultAssign;
         if (inst.actualResult == null) {
             resultAssign = new StatementBlock();
@@ -761,7 +760,8 @@ public final class UseOperationContractRule implements BuiltInRule {
         final StatementBlock postSB = replaceStatement(jb, resultAssign);
         JavaBlock postJavaBlock = JavaBlock.createJavaBlock(postSB);
         Modality modality = Modality.getModality(inst.modality.kind(), postJavaBlock);
-        final Term normalPost = tb.apply(anonUpdate,
+
+        final Term normalPost = tb.apply(anonUpdateWithMcu,
             tb.prog(modality.kind(), modality.program(), inst.progPost.sub(0),
                 TermLabelManager.instantiateLabels(termLabelState, services,
                     ruleApp.posInOccurrence(), this, ruleApp, postGoal, "PostModality", null,
@@ -783,7 +783,7 @@ public final class UseOperationContractRule implements BuiltInRule {
         JavaBlock excJavaBlock = JavaBlock.createJavaBlock(excPostSB);
         final Modality instantiatedModality =
             Modality.getModality(inst.modality.kind(), excJavaBlock);
-        final Term originalExcPost = tb.apply(anonUpdate, tb.prog(instantiatedModality.kind(),
+        final Term originalExcPost = tb.apply(anonUpdateWithMcu, tb.prog(instantiatedModality.kind(),
             instantiatedModality.program(), inst.progPost.sub(0),
             TermLabelManager.instantiateLabels(termLabelState, services, ruleApp.posInOccurrence(),
                 this, ruleApp, excPostGoal, "ExceptionalPostModality", null,
@@ -813,6 +813,18 @@ public final class UseOperationContractRule implements BuiltInRule {
                 .getInitConfig().getJustifInfo().getJustification(this);
         cjust.add(ruleApp, just);
         return result;
+    }
+
+    private Term generateMcu(Services services, Instantiation inst, ImmutableList<Term> contractParams) {
+        String instanceType = inst.pm.getContainerType().getName();
+        var mn = inst.pm.getName();
+        var paramTypes = new ArrayList<String>();
+        for (var param : contractParams) {
+            paramTypes.add(param.sort().toString());
+        }
+        var mid = services.getTypeConverter().getMethodLDT().getMethodNameConstant(instanceType, mn, new ImmutableArray<>(paramTypes));
+        final Term mc = services.getTermBuilder().func(mid);// MethodId needed here. (extract from context.)
+        return services.getTermBuilder().mcUpdate(mc);
     }
 
     @Override

@@ -63,21 +63,20 @@ class Casino {
         hashedNumber = -1;
     }
 
-    // ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(Casino_placeBet_Address_int_Coin, TRUE))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(Casino_removeFromPot_Address_int, TRUE))\then(TRUE)\else(FALSE))))*);
-    // diverges false; */
+    // ;
     /*@ normal_behavior
-      @ requires true;
-      @ ensures true;
+      @ requires operator != null & player != null & money > 0;
+      @ ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(Casino_placeBet_Address_int_Coin, TRUE))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(Casino_removeFromPot_Address_int, TRUE))\then(TRUE)\else(FALSE))))*);
       @*/
-    public void allNonReoccuringMethodCallSequencesGame(Address operator, Address player) {
+    public void allNonReoccuringMethodCallSequencesGame(Address operator, Address player, int money) {
        setupNewGame(operator, player);
        // Every single method call sequence should at least occur once (n * fac(n))
        //int[] methods = new int[]{Methods.TRANSFER, Methods.REMOVE_FROM_POT, Methods.CREATE_GAME, Methods.PLACE_BET, Methods.DECIDE_BET};
        //var method_sequences = permute(methods);
        //Methods[] method_sequences = new Methods[]{Methods.TRANSFER, Methods.CREATE_GAME, Methods.PLACE_BET, Methods.REMOVE_FROM_POT, Methods.DECIDE_BET};
-       int c = 0;
-       placeBet(player, 5, Coin.TAILS);
-       //removeFromPot(operator, 5);
+       //int c = 0;
+       placeBet(player, money, Coin.TAILS);
+       removeFromPot(operator, money);
        //for (List<Integer> method_sequence : method_sequences) {
         /*
        for (Methods method : method_sequences) {
@@ -110,7 +109,7 @@ class Casino {
 
     // Remove money from pot
     /*@ normal_behavior
-      @ requires true;
+      @ requires caller != null & amount > 0;
       @ ensures true;
       @*/
     public boolean removeFromPot(Address caller, int amount) {
@@ -135,7 +134,7 @@ class Casino {
 
     // Player places a bet
     /*@ normal_behavior
-      @ requires true;
+      @ requires caller != null & value > 0 & callerGuess != null;
       @ ensures true;
      */
     public boolean placeBet(Address caller, int value, Coin callerGuess) {

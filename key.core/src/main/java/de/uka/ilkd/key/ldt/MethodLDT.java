@@ -112,7 +112,11 @@ public class MethodLDT extends LDT {
      * @return The JFunction that is requested.
      */
     public JFunction getMethodNameConstant(String fnType, MethodName mnInst, ImmutableArray<String> params) {
-        final var methodNameToFind = constructMethodIdentifier(fnType, mnInst.toString(),
+        return getMethodNameConstant(fnType, mnInst.toString(), params);
+    }
+
+    public JFunction getMethodNameConstant(String fnType, String mn, ImmutableArray<String> params) {
+        final var methodNameToFind = constructMethodIdentifier(fnType, mn,
                 constructParams(params));
         final JFunction methodNameConstant;
         if ((methodNameConstant = getRegisteredMethodIdentifier(methodNameToFind)) == null) {
@@ -163,6 +167,16 @@ public class MethodLDT extends LDT {
         var potentialMatch =
                 methodNameConstants.keySet().stream().filter(mnc -> mnc.name().equals(methodNameCandidateName)).findFirst();
         return potentialMatch.orElse(null);
+    }
+
+    public Name getMethodId(String fnType, MethodName mnInst, ImmutableArray<String> params) {
+        final var methodNameToFind = constructMethodIdentifier(fnType, mnInst.toString(),
+                constructParams(params));
+        if ((getRegisteredMethodIdentifier(methodNameToFind)) == null) {
+            throw new RuntimeException(MethodLDT.class + ": MethodName constant '"
+                    + methodNameToFind + "' does not exist.");
+        }
+        return methodNameToFind;
     }
 
     /**

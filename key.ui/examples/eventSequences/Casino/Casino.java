@@ -47,11 +47,11 @@ class Casino {
     public int bet;
     private State state;
 
-    //@ invariant operator != null & player != null & guess != null & state != null & state.BET_PLACED != null & state.GAME_AVAILABLE != null & state.IDLE != null & Coin.HEADS != null & Coin.TAILS != null;
+    // invariant operator != null && player != null && guess != null && state != null && State.BET_PLACED != null && state.GAME_AVAILABLE != null && state.IDLE != null && Coin.HEADS != null && Coin.TAILS != null;
 
     /*@ normal_behavior
-      @ requires operator != null & player != null;
-      @ ensures this.operator == operator & this.player == player & this.guess == Coin.HEADS & this.state == State.IDLE & this.pot == 0 & this.bet == 0 & this.hashedNumber == -1;
+      @ requires operator != null && player != null;
+      @ ensures this.operator == operator && this.player == player && this.guess == Coin.HEADS && this.state == State.IDLE && this.pot == 0 && this.bet == 0 && this.hashedNumber == -1;
       @*/
     public void setupNewGame(Address operator, Address player) {
         this.operator = operator;
@@ -63,19 +63,20 @@ class Casino {
         hashedNumber = -1;
     }
 
-    // ;
+    // ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(Casino_removeFromPot_Address_int, TRUE))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(Casino_placeBet_Address_int_Coin, TRUE))\then(TRUE)\else(FALSE))))*); // Works
+    // ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(Casino_placeBet_Address_int_Coin, TRUE))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(Casino_removeFromPot_Address_int, TRUE))\then(TRUE)\else(FALSE))))*); // Works
     /*@ normal_behavior
-      @ requires operator != null & player != null & money > 0;
-      @ ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(Casino_placeBet_Address_int_Coin, TRUE))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(Casino_removeFromPot_Address_int, TRUE))\then(TRUE)\else(FALSE))))*);
+      @ requires operator != null && player != null && money > 0 && player != operator;
+      @ ensures (*eventSeq(seqConcat(seqSingleton(\if(event(Casino_placeBet_Address_int_Coin, TRUE))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(Casino_removeFromPot_Address_int, TRUE))\then(TRUE)\else(FALSE))))*); // Works
       @*/
-    public void allNonReoccuringMethodCallSequencesGame(Address operator, Address player, int money) {
+    public void allNonReoccuringMethodCallSequencesGame(Address operator, Address player, int money, Coin guess) {
        setupNewGame(operator, player);
        // Every single method call sequence should at least occur once (n * fac(n))
        //int[] methods = new int[]{Methods.TRANSFER, Methods.REMOVE_FROM_POT, Methods.CREATE_GAME, Methods.PLACE_BET, Methods.DECIDE_BET};
        //var method_sequences = permute(methods);
        //Methods[] method_sequences = new Methods[]{Methods.TRANSFER, Methods.CREATE_GAME, Methods.PLACE_BET, Methods.REMOVE_FROM_POT, Methods.DECIDE_BET};
        //int c = 0;
-       placeBet(player, money, Coin.TAILS);
+       placeBet(player, money, guess);
        removeFromPot(operator, money);
        //for (List<Integer> method_sequence : method_sequences) {
         /*
@@ -102,6 +103,10 @@ class Casino {
        simply reflects the transfer call from the original Casino contract. It has no effect on
        verification.
      */
+    /*@ normal_behavior
+      @ requires caller != null && amount > 0;
+      @ ensures \result == true && caller.balance == \old(caller.balance) - amount;
+      @*/
     public boolean transfer(Address caller, int amount) {
         caller.balance = caller.balance - amount;
         return true;
@@ -110,7 +115,8 @@ class Casino {
     // Remove money from pot
     /*@ normal_behavior
       @ requires caller != null & amount > 0;
-      @ ensures true;
+      @ ensures \result == false ==> state == State.BET_PLACED || caller != operator;
+      @ ensures \result == true ==> transfer(caller, amount) && pot == \old(pot) - amount;
       @*/
     public boolean removeFromPot(Address caller, int amount) {
         // no active bet ongoing:
@@ -123,6 +129,11 @@ class Casino {
     }
 
     // Operator opens a bet.
+    /*@ normal_behavior
+      @ requires caller != null && hashedNumber > 0;
+      @ ensures \result == false ==> state != State.IDLE || caller != operator;
+      @ ensures \result == true ==> this.hashedNumber == hashedNumber && state == State.GAME_AVAILABLE;
+      @*/
     public boolean createGame(Address caller, int hashedNumber) {
         if (state != State.IDLE || caller != operator) {
             return false;
@@ -134,8 +145,9 @@ class Casino {
 
     // Player places a bet
     /*@ normal_behavior
-      @ requires caller != null & value > 0 & callerGuess != null;
-      @ ensures true;
+      @ requires caller != null && value > 0 && callerGuess != null;
+      @ ensures \result == false ==> this.state != State.GAME_AVAILABLE || caller == this.operator || value > this.pot;
+      @ ensures \result == true ==> state == State.BET_PLACED && player == caller && bet == value && this.guess == callerGuess;
      */
     public boolean placeBet(Address caller, int value, Coin callerGuess) {
         if (this.state != State.GAME_AVAILABLE || caller == this.operator || value > this.pot) {
@@ -150,9 +162,9 @@ class Casino {
 
     // Operator resolves a bet
     /*@ normal_behavior
-      @ requires caller != null & secretNumber > 0;
+      @ requires caller != null && secretNumber > 0;
       @ ensures \result == false ==> state != State.BET_PLACED || caller != operator || hashedNumber != secretNumber;
-      @ ensures \result == true ==> state == State.IDLE;
+      @ ensures \result == true ==> state == State.IDLE && ((secretNumber % 2 == 0 && guess == Coin.HEADS) ==> bet == 0 && pot == \old(pot) - \old(bet) && player.balance == transfer(\old(player), (int)(2*\old(bet)))) && (!(secretNumber % 2 == 0 && guess == Coin.HEADS) ==> pot == \old(pot) + \old(bet) && bet == 0);
       @*/
     public boolean decideBet(Address caller, int secretNumber) {
         if (state != State.BET_PLACED || caller != operator || hashedNumber != secretNumber) {

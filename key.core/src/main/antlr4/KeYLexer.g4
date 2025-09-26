@@ -235,6 +235,7 @@ GET_METHOD_HEAP : '\\getMethodHeap';
 GET_PARAMS      : '\\getParams';
 EQUAL_METHOD_CALLS : '\\equalMethodCalls';
 IS_MC_UPDATE: '\\isMcUpdate';
+IS_PARALLEL_UPDATE: '\\isParallelUpdate';
 CONTAINS_EVENT: '\\containsEvent';
 CONTAINS_MC_UPDATE: '\\containsMcUpdate';
 DROP_EL_MC_UPDATES : '\\dropEffectlessMcUpdates';

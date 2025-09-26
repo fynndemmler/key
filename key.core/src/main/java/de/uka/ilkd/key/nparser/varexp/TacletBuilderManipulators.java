@@ -307,6 +307,8 @@ public class TacletBuilderManipulators {
             new ConstructorBasedBuilder("getParams", GetParamsCondition.class, SV, SV);
     public static final AbstractConditionBuilder IS_MC_UPDATE =
             new ConstructorBasedBuilder("isMcUpdate", IsMcUpdateCondition.class, SV);
+    public static final AbstractConditionBuilder IS_PARALLEL_UPDATE =
+            new ConstructorBasedBuilder("isParallelUpdate", IsParallelUpdateCondition.class, SV);
     public static final AbstractConditionBuilder CONTAINS_EVENT =
             new ConstructorBasedBuilder("containsEvent", ContainsEventCondition.class, SV);
     public static final AbstractConditionBuilder CONTAINS_MC_UPDATE =
@@ -400,7 +402,7 @@ public class TacletBuilderManipulators {
         register(STORE_TERM_IN, STORE_STMT_IN, HAS_INVARIANT, GET_INVARIANT, GET_FREE_INVARIANT,
                 GET_VARIANT, IS_LABELED);
         // Event Sequences
-        register(GET_METHOD_NAME, GET_METHOD_HEAP, GET_OBJECT, GET_PARAMS, IS_MC_UPDATE, CONTAINS_EVENT, DROP_EL_MC_UPDATES
+        register(GET_METHOD_NAME, GET_METHOD_HEAP, GET_OBJECT, GET_PARAMS, IS_MC_UPDATE, IS_PARALLEL_UPDATE, CONTAINS_EVENT, DROP_EL_MC_UPDATES
                 , CONTAINS_MC_UPDATE);
 
         loadWithServiceLoader();

@@ -717,6 +717,7 @@ varexpId: // weigl, 2021-03-12: This will be later just an arbitrary identifier.
   | GET_OBJECT
   | GET_PARAMS
   | IS_MC_UPDATE
+  | IS_PARALLEL_UPDATE
   | CONTAINS_EVENT
   | CONTAINS_MC_UPDATE
   | DROP_EL_MC_UPDATES

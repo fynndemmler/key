@@ -68,7 +68,7 @@ class Casino {
     // ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(Casino_placeBet_Address_int_Coin, TRUE))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(Casino_removeFromPot_Address_int, TRUE))\then(TRUE)\else(FALSE))))*); // Works
     /*@ normal_behavior
       @ requires operator != null && player != null && money > 0 && player != operator;
-      @ ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(Casino_removeFromPot_Address_int, TRUE))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(Casino_placeBet_Address_int_Coin, TRUE))\then(TRUE)\else(FALSE))))*); // Works
+      @ ensures placeBet(player, money, guess) && removeFromPot(operator, money);
       @*/
     public void allNonReoccuringMethodCallSequencesGame(Address operator, Address player, int money, Coin guess) {
        setupNewGame(operator, player);
@@ -115,16 +115,17 @@ class Casino {
 
     // Remove money from pot
     /*@ normal_behavior
-      @ requires caller != null & amount > 0;
-      @ ensures \result == false ==> state == State.BET_PLACED || caller != operator;
-      @ ensures \result == true ==> transfer(caller, amount) && pot == \old(pot) - amount;
+      @ requires caller != null && pot > 0 && amount > 0 && amount <= pot && operator != null && State.BET_PLACED != null;
+      @ ensures \result == false ==> (state == State.BET_PLACED || caller != operator);
+      @ ensures \result == true ==> (pot == \old(pot) - amount) && (\old(state) != State.BET_PLACED && caller == \old(operator));
+      @ assignable pot;
       @*/
     public boolean removeFromPot(Address caller, int amount) {
         // no active bet ongoing:
         if (this.state == State.BET_PLACED || caller != operator) {
            return false;
         }
-        transfer(caller, amount);
+        //transfer(caller, amount);
         pot = pot - amount;
         return true;
     }

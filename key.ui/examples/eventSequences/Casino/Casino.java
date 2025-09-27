@@ -105,27 +105,29 @@ class Casino {
        verification.
      */
     /*@ normal_behavior
-      @ requires caller != null && amount > 0;
+      @ requires caller != null && amount > 0 && caller.balance >= amount;
       @ ensures \result == true && caller.balance == \old(caller.balance) - amount;
+      @ assignable caller.balance;
       @*/
     public boolean transfer(Address caller, int amount) {
         caller.balance = caller.balance - amount;
         return true;
     }
 
+    // Proven
     // Remove money from pot
     /*@ normal_behavior
-      @ requires caller != null && pot > 0 && amount > 0 && amount <= pot && operator != null && State.BET_PLACED != null;
+      @ requires caller != null && operator != null && amount > 0 && caller.balance >= amount && State.BET_PLACED != null;
       @ ensures \result == false ==> (state == State.BET_PLACED || caller != operator);
-      @ ensures \result == true ==> (pot == \old(pot) - amount) && (\old(state) != State.BET_PLACED && caller == \old(operator));
-      @ assignable pot;
+      @ ensures \result == true ==> transfer(caller, amount) && (pot == \old(pot) - amount) && (state != State.BET_PLACED && caller == operator);
+      @ assignable pot, caller.balance;
       @*/
     public boolean removeFromPot(Address caller, int amount) {
         // no active bet ongoing:
         if (this.state == State.BET_PLACED || caller != operator) {
            return false;
         }
-        //transfer(caller, amount);
+        transfer(caller, amount);
         pot = pot - amount;
         return true;
     }

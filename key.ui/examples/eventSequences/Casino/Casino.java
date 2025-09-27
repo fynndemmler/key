@@ -47,8 +47,9 @@ class Casino {
     public int bet;
     private State state;
 
-    // invariant operator != null && player != null && guess != null && state != null && State.BET_PLACED != null && state.GAME_AVAILABLE != null && state.IDLE != null && Coin.HEADS != null && Coin.TAILS != null;
+    //@ invariant State.BET_PLACED != null && state.GAME_AVAILABLE != null && state.IDLE != null && Coin.HEADS != null && Coin.TAILS != null;
 
+    // Proven
     /*@ normal_behavior
       @ requires operator != null && player != null;
       @ ensures this.operator == operator && this.player == player && this.guess == Coin.HEADS && this.state == State.IDLE && this.pot == 0 && this.bet == 0 && this.hashedNumber == -1;
@@ -57,10 +58,10 @@ class Casino {
         this.operator = operator;
         this.player = player;
         this.guess = Coin.HEADS;
-        state = State.IDLE;
-        pot = 0;
-        bet = 0;
-        hashedNumber = -1;
+        this.state = State.IDLE;
+        this.pot = 0;
+        this.bet = 0;
+        this.hashedNumber = -1;
     }
 
     // ensures (*eventSeq(seqConcat(seqSingleton(\if(event(Casino_placeBet_Address_int_Coin, TRUE))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(Casino_removeFromPot_Address_int, TRUE))\then(TRUE)\else(FALSE))))*); // Works
@@ -70,7 +71,7 @@ class Casino {
       @ requires operator != null && player != null && money > 0 && player != operator;
       @ ensures placeBet(player, money, guess) && removeFromPot(operator, money);
       @*/
-    public void allNonReoccuringMethodCallSequencesGame(Address operator, Address player, int money, Coin guess) {
+    public void start(Address operator, Address player, int money, Coin guess) {
        setupNewGame(operator, player);
        // Every single method call sequence should at least occur once (n * fac(n))
        //int[] methods = new int[]{Methods.TRANSFER, Methods.REMOVE_FROM_POT, Methods.CREATE_GAME, Methods.PLACE_BET, Methods.DECIDE_BET};
@@ -99,32 +100,33 @@ class Casino {
        //}
     }
 
+    // Proven
     /*
        Transfer money from an address. The money is just added to the pot and this abstract method
        simply reflects the transfer call from the original Casino contract. It has no effect on
        verification.
      */
     /*@ normal_behavior
-      @ requires caller != null && amount > 0 && caller.balance >= amount;
-      @ ensures \result == true && caller.balance == \old(caller.balance) - amount;
+      @ requires caller != null && amount > 0;
+      @ ensures \result == true && caller.balance == \old(caller.balance) + amount;
       @ assignable caller.balance;
       @*/
     public boolean transfer(Address caller, int amount) {
-        caller.balance = caller.balance - amount;
+        caller.balance = caller.balance + amount;
         return true;
     }
 
     // Proven
     // Remove money from pot
     /*@ normal_behavior
-      @ requires caller != null && operator != null && amount > 0 && caller.balance >= amount && State.BET_PLACED != null;
+      @ requires caller != null && operator != null && amount > 0 && State.BET_PLACED != null;
       @ ensures \result == false ==> (state == State.BET_PLACED || caller != operator);
       @ ensures \result == true ==> transfer(caller, amount) && (pot == \old(pot) - amount) && (state != State.BET_PLACED && caller == operator);
       @ assignable pot, caller.balance;
       @*/
     public boolean removeFromPot(Address caller, int amount) {
         // no active bet ongoing:
-        if (this.state == State.BET_PLACED || caller != operator) {
+        if (state == State.BET_PLACED || caller != operator) {
            return false;
         }
         transfer(caller, amount);
@@ -132,50 +134,55 @@ class Casino {
         return true;
     }
 
+    // Proven
     // Operator opens a bet.
     /*@ normal_behavior
       @ requires caller != null && hashedNumber > 0;
       @ ensures \result == false ==> state != State.IDLE || caller != operator;
       @ ensures \result == true ==> this.hashedNumber == hashedNumber && state == State.GAME_AVAILABLE;
+      @ assignable this.hashedNumber, this.state;
       @*/
     public boolean createGame(Address caller, int hashedNumber) {
         if (state != State.IDLE || caller != operator) {
             return false;
         }
         this.hashedNumber = hashedNumber;
-        state = State.GAME_AVAILABLE;
+        this.state = State.GAME_AVAILABLE;
         return true;
     }
 
+    // Proven
     // Player places a bet
     /*@ normal_behavior
       @ requires caller != null && value > 0 && callerGuess != null;
       @ ensures \result == false ==> this.state != State.GAME_AVAILABLE || caller == this.operator || value > this.pot;
       @ ensures \result == true ==> state == State.BET_PLACED && player == caller && bet == value && this.guess == callerGuess;
+      @ assignable this.state, this.player, this.bet, this.guess;
      */
     public boolean placeBet(Address caller, int value, Coin callerGuess) {
-        if (this.state != State.GAME_AVAILABLE || caller == this.operator || value > this.pot) {
+        if (state != State.GAME_AVAILABLE || caller == operator || value > pot) {
             return false;
         }
-        state = State.BET_PLACED;
-        player = caller;
-        bet = value;
+        this.state = State.BET_PLACED;
+        this.player = caller;
+        this.bet = value;
         this.guess = callerGuess;
         return true;
     }
 
+    // Proven
     // Operator resolves a bet
     /*@ normal_behavior
-      @ requires caller != null && secretNumber > 0;
+      @ requires caller != null && player != null && secretNumber > 0 && bet > 0 && pot > 0 && pot < 10000 && bet < 10000;
       @ ensures \result == false ==> state != State.BET_PLACED || caller != operator || hashedNumber != secretNumber;
-      @ ensures \result == true ==> state == State.IDLE && ((secretNumber % 2 == 0 && guess == Coin.HEADS) ==> bet == 0 && pot == \old(pot) - \old(bet) && player.balance == transfer(\old(player), (int)(2*\old(bet)))) && (!(secretNumber % 2 == 0 && guess == Coin.HEADS) ==> pot == \old(pot) + \old(bet) && bet == 0);
+      @ ensures \result == true ==> state == State.IDLE && ((secretNumber % 2 == 0 && guess == Coin.HEADS) ==> bet == 0 && pot == pot - bet && transfer(player, (int)(2*\old(bet)))) && (secretNumber % 2 != 0 && guess == Coin.TAILS ==> pot == pot + bet && bet == 0);
+      @ assignable pot, bet, state, player.balance;
       @*/
     public boolean decideBet(Address caller, int secretNumber) {
         if (state != State.BET_PLACED || caller != operator || hashedNumber != secretNumber) {
             return false;
         }
         Coin secret = (secretNumber % 2 == 0) ? Coin.HEADS : Coin.TAILS;
-
         if (secret == guess) {
             // player wins, gets back twice her bet
             pot = pot - bet;

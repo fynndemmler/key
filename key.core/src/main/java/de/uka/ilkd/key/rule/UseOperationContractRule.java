@@ -816,7 +816,7 @@ public final class UseOperationContractRule implements BuiltInRule {
     }
 
     private Term generateMcu(Services services, Instantiation inst, ImmutableList<Term> contractParams) {
-        String instanceType = inst.pm.getContainerType().getName();
+        String instanceType = inst.pm.getContainerType().getFullName();
         var mn = inst.pm.getName();
         var paramTypes = new ArrayList<String>();
         for (var param : contractParams) {

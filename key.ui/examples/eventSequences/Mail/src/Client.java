@@ -352,104 +352,52 @@ public  class Client {
 	// MUHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 	// MUHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 	// MUHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+
+	// ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(EmailSystem_Email_setEmailIsEncrypted_boolean, cond1))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(EmailSystem_Client_forward_EmailSystem_Client_EmailSystem_Email, cond2))\then(TRUE)\else(FALSE))))*);
 	/*@
 	  @ public normal_behavior
 	  @ requires client != null && msg != null;
-	  @ ensures msg.isDelivered == true;
-	  @ ensures (client.forwardReceiver != null && client.forwardReceiver.name != null) ==> (msg.to == client.forwardReceiver && msg.from == client);
-	  @ ensures (client.privateKey != 0 && msg.isEncrypted && isKeyPairValid(msg.encryptionKey, client.privateKey)) ==> (!msg.isEncrypted && msg.encryptionKey == 0);
-	  @ assignable msg.isEncrypted, msg.encryptionKey, msg.isDelivered, msg.to, msg.from;
-	  @ diverges true;
-	  @*/
-	private void BASE_incoming_Decrypt_Forward(Client client, Email msg) {
-		// decrypt
-		int privkey = client.getPrivateKey();
-		if (privkey != 0) {
-			if (msg.isEncrypted()
-					&& isKeyPairValid(msg.getEmailEncryptionKey(), privkey)) {
-				msg.setEmailIsEncrypted(false);
-				msg.setEmailEncryptionKey(0);
-			}
-		}
-		// end decrypt
-
-		deliver(client, msg);
-		Client receiver = client.getForwardReceiver();
-		if (receiver != null && receiver.getName() != null) {
-			msg.setEmailTo(receiver.getName());
-			forward(client, msg);
-			BASE_incoming_Decrypt_Forward(receiver, msg);
-		}
-	}
-
-
-	/*@
-	  @ public normal_behavior
-	  @ requires client != null && msg != null;
-	  @ ensures msg.isDelivered();
-	  @ ensures (client.forwardReceiver != null && client.forwardReceiver.name != null) ==> (msg.to == client.forwardReceiver && msg.from == client);
-	  @ ensures (client.privateKey != 0 && msg.isEncrypted && isKeyPairValid(msg.encryptionKey, client.privateKey)) ==> (!msg.isEncrypted && msg.encryptionKey == 0);
 	  @ ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(EmailSystem_Email_setEmailIsEncrypted_boolean, cond1))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(EmailSystem_Client_forward_EmailSystem_Client_EmailSystem_Email, cond2))\then(TRUE)\else(FALSE))))*);
-	  @ assignable msg.isEncrypted, msg.encryptionKey, msg.isDelivered, msg.to, msg.from;
-	  @ diverges true;
-	  @*/
-	private void incoming_Decrypt_Forward(Client client, Email msg) {
-		// decrypt
-		int privkey = client.getPrivateKey();
-		if (privkey != 0) {
-			if (msg.isEncrypted()
-					&& isKeyPairValid(msg.getEmailEncryptionKey(), privkey)) {
-				//@ set cond1 = msg.isEncrypted;
-				msg.setEmailIsEncrypted(false);
-				msg.setEmailEncryptionKey(0);
-			}
-		}
-		// end decrypt
-
-		deliver(client, msg);
-		Client receiver = client.getForwardReceiver();
-		if (receiver != null && receiver.getName() != null) {
-			msg.setEmailTo(receiver.getName());
-			//@ set cond2 = !msg.isEncrypted;
-			forward(client, msg);
-			incoming_Decrypt_Forward(receiver, msg);
-		}
-	}
-
-
-	/*@
-	  @ public normal_behavior
-	  @ requires client != null && msg != null;
-	  @ ensures msg.isDelivered();
-	  @ ensures (client.forwardReceiver != null && client.forwardReceiver.name != null) ==> (msg.to == client.forwardReceiver && msg.from == client);
-	  @ ensures (client.privateKey != 0 && msg.isEncrypted && isKeyPairValid(msg.encryptionKey, client.privateKey)) ==> (!msg.isEncrypted && msg.encryptionKey == 0);
-	  @ ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(EmailSystem_Email_setEmailIsEncrypted_boolean, cond1))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(EmailSystem_Client_forward_EmailSystem_Client_EmailSystem_Email, cond2))\then(TRUE)\else(FALSE))))*);
-	  @ assignable msg.isEncrypted, msg.encryptionKey, msg.isDelivered, msg.to, msg.from;
-	  @ diverges true;
+	  @ assignable msg.isEncrypted, msg.encryptionKey, msg.isDelivered, msg.to, msg.from, cond1, cond2;
 	  @*/
 	private void SAFE_incoming_Decrypt_Forward(Client client, Email msg) {
 		// decrypt
 		int privkey = client.getPrivateKey();
-		if (privkey != 0) {
-			if (msg.isEncrypted()
-					&& isKeyPairValid(msg.getEmailEncryptionKey(), privkey)) {
+		if (privkey != 0 && msg.isEncrypted() && isKeyPairValid(msg.getEmailEncryptionKey(), privkey)) {
 				//@ set cond1 = msg.isEncrypted;
 				msg.setEmailIsEncrypted(false);
 				msg.setEmailEncryptionKey(0);
-			}
 		}
 		// end decrypt
-
-		deliver(client, msg);
-
 		msg.setEmailIsEncrypted(true);
-
+		deliver(client, msg);
 		Client receiver = client.getForwardReceiver();
-		if (receiver != null && receiver.getName() != null) {
-			msg.setEmailTo(receiver.getName());
+		if (receiver != null) {
 			//@ set cond2 = !msg.isEncrypted;
-			forward(client, msg);
-			incoming_Decrypt_Forward(receiver, msg);
+			forward(receiver, msg);
+		}
+	}
+
+	/*@
+	  @ public normal_behavior
+	  @ requires client != null && msg != null && msg.isEncrypted == true;
+	  @ ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(EmailSystem_Email_setEmailIsEncrypted_boolean, cond1))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(EmailSystem_Client_forward_EmailSystem_Client_EmailSystem_Email, cond2))\then(TRUE)\else(FALSE))))*);
+	  @ assignable msg.isEncrypted, msg.encryptionKey, msg.isDelivered, msg.to, msg.from, cond1, cond2;
+	  @*/
+	private void BASE_incoming_Decrypt_Forward(Client client, Email msg) {
+		// decrypt
+		int privkey = client.getPrivateKey();
+		if (privkey != 0 && msg.isEncrypted() && isKeyPairValid(msg.getEmailEncryptionKey(), privkey)) {
+			//@ set cond1 = msg.isEncrypted;
+			msg.setEmailIsEncrypted(false);
+			msg.setEmailEncryptionKey(0);
+		}
+		// end decrypt
+		deliver(client, msg);
+		Client receiver = client.getForwardReceiver();
+		if (receiver != null) {
+			//@ set cond2 = msg.isEncrypted == false;
+			forward(receiver, msg);
 		}
 	}
 

@@ -67,7 +67,7 @@ public class MethodLDT extends LDT {
         if (methDecl == null) {
             return false;
         }
-        final String fullTypeName = containerType.getFullName();
+        final String fullTypeName = containerType.getName();
         final String methodName = methDecl.getName();
         final Name newMethodId;
         newMethodId = constructMethodIdentifier(fullTypeName, methodName, constructParams(methDecl.getParameters()));

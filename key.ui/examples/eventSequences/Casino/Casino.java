@@ -69,7 +69,8 @@ class Casino {
     // ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(Casino_placeBet_Address_int_Coin, TRUE))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(Casino_removeFromPot_Address_int, TRUE))\then(TRUE)\else(FALSE))))*); // Works
     /*@ normal_behavior
       @ requires operator != null && player != null && money > 0 && player != operator;
-      @ ensures placeBet(player, money, guess) && removeFromPot(operator, money);
+      @ ensures (*eventSeq(seqConcat(seqSingleton(\if(event(Casino_removeFromPot_Address_int, TRUE))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(Casino_placeBet_Address_int_Coin, TRUE))\then(TRUE)\else(FALSE))))*);
+      @ assignable \everything;
       @*/
     public void start(Address operator, Address player, int money, Coin guess) {
        setupNewGame(operator, player);

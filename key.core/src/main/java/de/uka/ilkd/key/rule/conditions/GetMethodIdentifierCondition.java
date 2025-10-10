@@ -59,7 +59,7 @@ public class GetMethodIdentifierCondition implements VariableCondition {
         for (Expression p : paramsArr) {
             paramTypes.add(services.getTypeConverter().getKeYJavaType(p).getFullName());
         }
-        final JFunction methodNameConst = methodLDT.getMethodNameConstant(fieldType, mnInst,
+        final JFunction methodNameConst = methodLDT.getMethodNameConstant(services, fieldType, mnInst,
                 new ImmutableArray<>(paramTypes));
         var methodTerm = services.getTermBuilder().func(methodNameConst);
         var ret = svInst.add(this.newMethodName, methodTerm, services);

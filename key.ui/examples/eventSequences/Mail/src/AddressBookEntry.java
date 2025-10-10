@@ -1,5 +1,3 @@
-package EmailSystem;
-
 
 public class AddressBookEntry {
 	String alias;

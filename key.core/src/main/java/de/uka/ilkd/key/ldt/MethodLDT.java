@@ -50,6 +50,12 @@ public class MethodLDT extends LDT {
         }
     }
 
+    /*
+    public void addMethodConstant(Services services, JFunction methodConstant) {
+        if (methodNameConstants.keySet().stream().filter(mnc -> mnc.equals(methodConstant)).anyMatch()) return;
+        methodNameConstants.p
+    }*/
+
     /**
      * Constructs a JFunction for a given MethodDeclaration methDecl through custom encoding.
      * Since we want a different MethodId for every overload, we need to encode the parameters too.
@@ -72,18 +78,11 @@ public class MethodLDT extends LDT {
         final Name newMethodId;
         newMethodId = constructMethodIdentifier(fullTypeName, methodName, constructParams(methDecl.getParameters()));
         System.out.println(newMethodId);
-        final JFunction method = new JFunction(newMethodId, targetSort(), true, false);
+        final JFunction method = new JFunction(newMethodId, services.getNamespaces().sorts().lookup("MethodId"), true, false);
         if (methodConstantExists(newMethodId)) {
             return false;
         }
         services.getNamespaces().functions().add(method);
-        // We add one heap per method identifier to the program variables. These heaps are unique because every method identifier is unique.
-        if(!addMethodHeapToPVs(services, method)) {
-            return false;
-        }
-        var mHeap = getMethodHeap(services, method);
-        services.getTypeConverter().getHeapLDT().addMethodHeap(mHeap);
-        methodNameConstants.put(method, mHeap);
         return true;
     }
 
@@ -111,20 +110,14 @@ public class MethodLDT extends LDT {
      * @param params An array of parameter types.
      * @return The JFunction that is requested.
      */
-    public JFunction getMethodNameConstant(String fnType, MethodName mnInst, ImmutableArray<String> params) {
-        return getMethodNameConstant(fnType, mnInst.toString(), params);
+    public JFunction getMethodNameConstant(Services services, String fnType, MethodName mnInst, ImmutableArray<String> params) {
+        return getMethodNameConstant(services, fnType, mnInst.toString(), params);
     }
 
-    public JFunction getMethodNameConstant(String fnType, String mn, ImmutableArray<String> params) {
+    public JFunction getMethodNameConstant(Services services, String fnType, String mn, ImmutableArray<String> params) {
         final var methodNameToFind = constructMethodIdentifier(fnType, mn,
                 constructParams(params));
-        final JFunction methodNameConstant;
-        if ((methodNameConstant = getRegisteredMethodIdentifier(methodNameToFind)) == null) {
-            throw new RuntimeException(MethodLDT.class + ": MethodName constant '"
-                    + methodNameToFind + "' does not exist.");
-        }
-        var mcsAsList = methodNameConstants.keySet().stream().toList();
-        return mcsAsList.get(mcsAsList.indexOf(methodNameConstant));
+        return services.getNamespaces().functions().lookup(methodNameToFind);
     }
 
     private boolean methodConstantExists(Name candidate) {

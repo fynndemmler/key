@@ -1,6 +1,3 @@
-package EmailSystem; 
-
-
 public  class Client {
 	private /*@spec_public@*/ /*@non_null*/ String name;
 	private /*@spec_public@*/ int id;
@@ -14,16 +11,6 @@ public  class Client {
 	//protected ArrayList<AddressBookEntry> addressbook = new ArrayList<AddressBookEntry>();
 	protected /*@spec_public@*/ static Client forwardReceiver;
 
-
-	// MUHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
-	// MUHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
-	// MUHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
-	// MUHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
-	//@ public ghost boolean cond1;
-	//@ public ghost boolean cond2;
-
-	
-	
 	/*@
 	@ normal_behavior
 	@ requires name != null && Client.clients != null&& Client.clientCounter < Client.clients.length&& Client.clientCounter >= 0 && (Client.clients instanceof Client[]) && name != null && Client.clients != null;
@@ -161,7 +148,7 @@ public  class Client {
 	}
 
 	public Client() {
-		
+
 	}
 
 	/*@
@@ -204,7 +191,7 @@ public  class Client {
 
 	}
 
-	
+
 	/*@
 	  @ public normal_behavior
 	  @ requires true;
@@ -217,7 +204,7 @@ public  class Client {
 			addEmailToMailbox(client, msg);
 		}
 	}
-	
+
 	/*@
 	  @ public normal_behavior
 	  @ requires true;
@@ -232,7 +219,7 @@ public  class Client {
 		}
 		client.mailbox = tmp;
 	}
-	
+
 	/*@
 	  @ public normal_behavior
 	  @ requires client != null && client.mailbox != null;
@@ -251,11 +238,11 @@ public  class Client {
 		}
 		return false;
 	}
-	
+
 	/*@
 	  @ public normal_behavior
 	  @ requires client != null && msg != null;
-	  @ ensures msg.from == client && msg.isDelivered == false ;
+	  @ ensures msg.from == client && msg.isDelivered == false;
 	  @ assignable msg.from, msg.isDelivered;
 	  @*/
 	void forward(Client client, Email msg) {
@@ -272,7 +259,7 @@ public  class Client {
 	private void incoming__Base(Client client, Email msg) {
 		deliver(client, msg);
 	}
-	
+
 	/*@
 	  @ public normal_behavior
 	  @ requires  client!=null && msg!=null;
@@ -290,39 +277,6 @@ public  class Client {
 			incoming__Forward(receiver, msg);
 		}
 	}
-//	private static void incoming__wrappee__Keys(Client client, Email msg) {
-//		deliver(client, msg);
-//	}
-
-//	private static void incoming__wrappee__Encrypt(Client client, Email msg) {
-//		//TODO add to encryptedMails if msg.isEncrypted()
-//		incoming__wrappee__Keys(client, msg);
-//	}
-
-
-//	private static void incoming__wrappee__Sign(Client client, Email msg) {
-//		incoming__wrappee__Encrypt(client, msg);
-//		if (client.isAutoResponse()) {
-//			autoRespond(client, msg);
-//		}
-//	}
-
-
-//	private static void incoming__wrappee__Forward(Client client, Email msg) {
-//		incoming__wrappee__Sign(client, msg);
-//		Client receiver = client.getForwardReceiver();
-//		if (receiver != null) {
-//			msg.setEmailTo(receiver.getName());
-//			forward(client, msg);
-//			incoming(receiver, msg);
-//		}
-//	}
-
-
-//	private static void incoming__wrappee__Verify(Client client, Email msg) {
-//		verify(client, msg);
-//		incoming__wrappee__Forward(client, msg);
-//	}
 
 	/*@
 	  @ public normal_behavior
@@ -346,62 +300,6 @@ public  class Client {
 
 		deliver(client, msg);
 	}
-
-
-	// MUHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
-	// MUHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
-	// MUHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
-	// MUHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
-
-	// ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(EmailSystem_Email_setEmailIsEncrypted_boolean, cond1))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(EmailSystem_Client_forward_EmailSystem_Client_EmailSystem_Email, cond2))\then(TRUE)\else(FALSE))))*);
-	/*@
-	  @ public normal_behavior
-	  @ requires client != null && msg != null;
-	  @ ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(EmailSystem_Email_setEmailIsEncrypted_boolean, cond1))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(EmailSystem_Client_forward_EmailSystem_Client_EmailSystem_Email, cond2))\then(TRUE)\else(FALSE))))*);
-	  @ assignable msg.isEncrypted, msg.encryptionKey, msg.isDelivered, msg.to, msg.from, cond1, cond2;
-	  @*/
-	private void SAFE_incoming_Decrypt_Forward(Client client, Email msg) {
-		// decrypt
-		int privkey = client.getPrivateKey();
-		if (privkey != 0 && msg.isEncrypted() && isKeyPairValid(msg.getEmailEncryptionKey(), privkey)) {
-				//@ set cond1 = msg.isEncrypted;
-				msg.setEmailIsEncrypted(false);
-				msg.setEmailEncryptionKey(0);
-		}
-		// end decrypt
-		msg.setEmailIsEncrypted(true);
-		deliver(client, msg);
-		Client receiver = client.getForwardReceiver();
-		if (receiver != null) {
-			//@ set cond2 = !msg.isEncrypted;
-			forward(receiver, msg);
-		}
-	}
-
-	/*@
-	  @ public normal_behavior
-	  @ requires client != null && msg != null && msg.isEncrypted == true;
-	  @ ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(EmailSystem_Email_setEmailIsEncrypted_boolean, cond1))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(EmailSystem_Client_forward_EmailSystem_Client_EmailSystem_Email, cond2))\then(TRUE)\else(FALSE))))*);
-	  @ assignable msg.isEncrypted, msg.encryptionKey, msg.isDelivered, msg.to, msg.from, cond1, cond2;
-	  @*/
-	private void BASE_incoming_Decrypt_Forward(Client client, Email msg) {
-		// decrypt
-		int privkey = client.getPrivateKey();
-		if (privkey != 0 && msg.isEncrypted() && isKeyPairValid(msg.getEmailEncryptionKey(), privkey)) {
-			//@ set cond1 = msg.isEncrypted;
-			msg.setEmailIsEncrypted(false);
-			msg.setEmailEncryptionKey(0);
-		}
-		// end decrypt
-		deliver(client, msg);
-		Client receiver = client.getForwardReceiver();
-		if (receiver != null) {
-			//@ set cond2 = msg.isEncrypted == false;
-			forward(receiver, msg);
-		}
-	}
-
-
 
 	private static void mail__wrappee__Keys(Client client, Email msg) {
 	}
@@ -603,7 +501,8 @@ public  class Client {
 
 	/*@
 	  @ public normal_behavior
-	  @ requires true;
+	  @ requires forwardReceiver!=null;
+	  @ ensures \result != null;
 	  @ ensures \result == forwardReceiver;
 	  @ assignable \nothing;
 	  @*/
@@ -611,5 +510,24 @@ public  class Client {
 		return forwardReceiver;
 	}
 
-
+	/*@
+	  @ public normal_behavior
+	  @ requires client != null && msg != null && msg.isEncrypted == true;
+	  @ ensures true;
+	  @ assignable msg.isEncrypted, msg.encryptionKey, msg.isDelivered, msg.to, msg.from;
+	  @*/
+	private void BASE_incoming_Decrypt_Forward(Client client, Email msg) {
+		// decrypt
+		int privkey = client.getPrivateKey();
+		if (privkey != 0 && msg.isEncrypted() && isKeyPairValid(msg.getEmailEncryptionKey(), privkey)) {
+			msg.setEmailIsEncrypted(false);
+			msg.setEmailEncryptionKey(0);
+		}
+		// end decrypt
+		deliver(client, msg);
+		Client receiver = client.getForwardReceiver();
+		if (receiver != null) {
+			forward(receiver, msg);
+		}
+	}
 }

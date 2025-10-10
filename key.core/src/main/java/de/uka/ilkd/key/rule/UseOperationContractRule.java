@@ -690,7 +690,7 @@ public final class UseOperationContractRule implements BuiltInRule {
             }
         }
         if (anonUpdate != null) {
-            anonUpdateWithMcu = tb.parallel(anonUpdate, generateMcu(services, inst, contractParams));
+            anonUpdateWithMcu = tb.parallel(anonUpdate, tb.skip());
         }
 
         final Term excNull = tb.equals(tb.var(excVar), tb.NULL());
@@ -822,7 +822,7 @@ public final class UseOperationContractRule implements BuiltInRule {
         for (var param : contractParams) {
             paramTypes.add(param.sort().toString());
         }
-        var mid = services.getTypeConverter().getMethodLDT().getMethodNameConstant(instanceType, mn, new ImmutableArray<>(paramTypes));
+        var mid = services.getTypeConverter().getMethodLDT().getMethodNameConstant(services, instanceType, mn, new ImmutableArray<>(paramTypes));
         final Term mc = services.getTermBuilder().func(mid);// MethodId needed here. (extract from context.)
         return services.getTermBuilder().mcUpdate(mc);
     }

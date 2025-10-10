@@ -1,4 +1,3 @@
-package EmailSystem; 
 
 public  class Email {
 	private /*@spec_public@*/ int id;
@@ -100,7 +99,7 @@ public  class Email {
 	  @ ensures isEncrypted == value;
 	  @ assignable isEncrypted;
 	  @*/
-	void /*@helper*/ setEmailIsEncrypted(boolean value) {
+	public void /*@helper*/ setEmailIsEncrypted(boolean value) {
 		isEncrypted = value;
 	}
 	/*@

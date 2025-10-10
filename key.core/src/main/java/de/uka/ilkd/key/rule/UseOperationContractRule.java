@@ -690,7 +690,7 @@ public final class UseOperationContractRule implements BuiltInRule {
             }
         }
         if (anonUpdate != null) {
-            anonUpdateWithMcu = tb.parallel(anonUpdate, tb.skip());
+            anonUpdateWithMcu = tb.parallel(anonUpdate, generateMcu(services, inst, contractParams));
         }
 
         final Term excNull = tb.equals(tb.var(excVar), tb.NULL());

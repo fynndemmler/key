@@ -560,4 +560,27 @@ public  class Client {
 			forward(receiver, msg);
 		}
 	}
+
+	/*@
+	  @ public normal_behavior
+	  @ requires client != null && msg != null && msg.isEncrypted == true && this.cond1 == false && this.cond2 == false;
+	  @ ensures true;
+	  @ assignable msg.isEncrypted, msg.encryptionKey, msg.isDelivered, msg.to, msg.from, cond1, cond2;
+	  @*/
+	private void BASE_incoming_Decrypt_Forward(Client client, Email msg) {
+		// decrypt
+		int privkey = client.getPrivateKey();
+		if (privkey != 0 && msg.isEncrypted() && isKeyPairValid(msg.getEmailEncryptionKey(), privkey)) {
+			cond1 = msg.isEncrypted() == true;
+			msg.setEmailIsEncrypted(false);
+			msg.setEmailEncryptionKey(0);
+		}
+		// end decrypt
+		deliver(client, msg);
+		Client receiver = client.getForwardReceiver();
+		if (receiver != null) {
+			cond2 = msg.isEncrypted() == false;
+			forward(receiver, msg);
+		}
+	}
 }

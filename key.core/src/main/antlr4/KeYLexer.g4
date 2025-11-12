@@ -226,8 +226,6 @@ CONTRACTS : '\\contracts';
 INVARIANTS : '\\invariants';
 
 // Keywords for Event Sequences
-EVENT : '\\event';
-EVENT_SEQ : '\\eventSeq';
 MC_UPDATE : 'mcUpdate';
 GET_OBJECT : '\\getObject';
 GET_METHOD_ID : '\\getMethodIdentifier';

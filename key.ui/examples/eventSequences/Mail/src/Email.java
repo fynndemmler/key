@@ -13,6 +13,7 @@ public  class Email {
 	private /*@spec_public@*/ boolean isSignatureVerified;
 	
 	private /*@spec_public@*/ boolean isDelivered;
+	private /*@spec_public@*/ boolean isForwarded;
 
 	/*@
 	@ normal_behavior
@@ -111,7 +112,16 @@ public  class Email {
 	void /*@helper*/setEmailIsDelivered(boolean value) {
 		isDelivered = value;
 	}
-	
+
+	/*@
+	  @ public normal_behavior
+	  @ requires true;
+	  @ ensures isForwarded == value;
+	  @ assignable isForwarded;
+	  @*/
+	void /*@helper*/setEmailIsForwarded(boolean value) {
+		isForwarded = value;
+	}
 	/*@
 	  @ public normal_behavior
 	  @ requires true;

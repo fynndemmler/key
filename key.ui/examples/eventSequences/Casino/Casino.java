@@ -69,16 +69,36 @@ class Casino {
     }
 
     /*@ public normal_behavior
-      @ requires (*!eventSeq(seqConcat(seqSingleton(\if(event(Casino_placeBet_int_Coin, TRUE))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(Casino_removeFromPot_int, TRUE))\then(TRUE)\else(FALSE))))*);
       @ requires bet > 0 && amount > 0 && guess != null;
       @ requires operator != null && player != null && player != operator;
-      @ ensures true;
       @ ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(Casino_placeBet_int_Coin, TRUE))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(Casino_removeFromPot_int, TRUE))\then(TRUE)\else(FALSE))))*);
       @ assignable \everything;
       @*/
-    public void triggerFirstEventSequence(int bet, int amount, Coin guess) {
+    public void ESV_eventSeq1(int bet, int amount, Coin guess) {
+        placeBet(bet, guess);
+        removeFromPot(amount);
+    }
+
+    /*@ public normal_behavior
+      @ requires bet > 0 && amount > 0 && guess != null;
+      @ requires operator != null && player != null && player != operator;
+      @ ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(Casino_placeBet_int_Coin, TRUE))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(Casino_removeFromPot_int, TRUE))\then(TRUE)\else(FALSE))))*);
+      @ assignable \everything;
+      @*/
+    public void SAFE_eventSeq1(int bet, int amount, Coin guess) {
         removeFromPot(amount);
         placeBet(bet, guess);
+    }
+
+    /*@ public normal_behavior
+      @ requires bet > 0 && amount > 0 && guess != null;
+      @ requires operator != null && player != null && player != operator;
+      @ ensures true;
+      @ assignable \everything;
+      @*/
+    public void BASE_eventSeq1(int bet, int amount, Coin guess) {
+        placeBet(bet, guess);
+        removeFromPot(amount);
     }
 
     // ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(Casino_removeFromPot_Address_int, TRUE))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(Casino_placeBet_Address_int_Coin, TRUE))\then(TRUE)\else(FALSE))))*); // Works: Can be verified

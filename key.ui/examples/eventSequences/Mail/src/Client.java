@@ -513,7 +513,7 @@ public  class Client {
 	private boolean cond2;
 	/*@
 	  @ public normal_behavior
-	  @ requires client != null && msg != null && msg.isEncrypted == true && this.cond1 == false && this.cond2 == false;
+	  @ requires client != null && msg != null && msg.isEncrypted == true && cond1 == false && cond2 == false;
 	  @ ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(Client_decrypt_Email_int, self.cond1))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(Client_forward_Client_Email, self.cond2))\then(TRUE)\else(FALSE))))*);
 	  @ assignable msg.isEncrypted, msg.encryptionKey, msg.isForwarded, msg.isDelivered, msg.to, msg.from, cond1, cond2;
 	  @*/

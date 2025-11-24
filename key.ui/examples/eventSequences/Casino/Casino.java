@@ -74,7 +74,7 @@ class Casino {
       @ ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(Casino_placeBet_int_Coin, TRUE))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(Casino_removeFromPot_int, TRUE))\then(TRUE)\else(FALSE))))*);
       @ assignable \everything;
       @*/
-    public void ESV_eventSeq1(int bet, int amount, Coin guess) {
+    public void ESV_start1(int bet, int amount, Coin guess) {
         placeBet(bet, guess);
         removeFromPot(amount);
     }
@@ -85,20 +85,46 @@ class Casino {
       @ ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(Casino_placeBet_int_Coin, TRUE))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(Casino_removeFromPot_int, TRUE))\then(TRUE)\else(FALSE))))*);
       @ assignable \everything;
       @*/
-    public void SAFE_eventSeq1(int bet, int amount, Coin guess) {
+    public void SAFE_start1(int bet, int amount, Coin guess) {
         removeFromPot(amount);
         placeBet(bet, guess);
     }
 
+    //eventSeq(event(decideBet, state == State.BET\_PLACED \&\& sender == operator \&\& hashedNumber == secretNumber, event(createGame, bet > 0))
     /*@ public normal_behavior
-      @ requires bet > 0 && amount > 0 && guess != null;
+      @ requires hashedNumber > 0 && bet > 0;
       @ requires operator != null && player != null && player != operator;
-      @ ensures true;
+      @ ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(Casino_decideBet_int, self.cond1))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(Casino_createGame_int, self.cond2))\then(TRUE)\else(FALSE))))*);
       @ assignable \everything;
       @*/
-    public void BASE_eventSeq1(int bet, int amount, Coin guess) {
-        placeBet(bet, guess);
-        removeFromPot(amount);
+    public void ESV_start2(int secretNumber, int hashedNumber) {
+        this.hashedNumber = hashedNumber;
+        this.state = State.BET_PLACED;
+        this.sender = this.operator;
+        secretNumber = hashedNumber;
+        cond1 = state == State.BET_PLACED && sender == operator && hashedNumber == secretNumber;
+        decideBet(secretNumber);
+        bet = 10;
+        cond2 = bet > 0;
+        createGame(hashedNumber);
+    }
+
+    /*@ public normal_behavior
+      @ requires hashedNumber > 10 && bet > 0;
+      @ requires operator != null && player != null && player != operator;
+      @ ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(Casino_decideBet_int, self.cond1))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(Casino_createGame_int, self.cond2))\then(TRUE)\else(FALSE))))*);
+      @ assignable \everything;
+      @*/
+    public void SAFE_start2(int secretNumber, int hashedNumber) {
+        this.hashedNumber = hashedNumber;
+        this.state = State.BET_PLACED;
+        this.sender = this.operator;
+        secretNumber = hashedNumber;
+        cond1 = state == State.BET_PLACED && sender == operator && hashedNumber == secretNumber;
+        decideBet(secretNumber);
+        bet = 0;
+        cond2 = bet > 0;
+        createGame(hashedNumber);
     }
 
     // ensures (*!eventSeq(seqConcat(seqSingleton(\if(event(Casino_removeFromPot_Address_int, TRUE))\then(TRUE)\else(FALSE)), seqSingleton(\if(event(Casino_placeBet_Address_int_Coin, TRUE))\then(TRUE)\else(FALSE))))*); // Works: Can be verified
